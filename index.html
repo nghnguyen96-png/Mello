@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MELLO</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -338,14 +338,125 @@ body{background:#dce1e6;color:var(--tx)}
 @media(max-width:540px){#auth{overflow-y:auto;padding:18px 0}.aw{margin:auto}}
 
 </style>
+<style id="v2">
+/* ===== MELLO v2 — giao diện sáng, hiện đại ===== */
+:root{--bg:#f3f5fb;--p1:#fff;--p2:#f1f3fa;--p3:#e6e9f6;--p4:#d5daf0;--blue:#5b6cff;--blue-l:#6f7dff;--blue-xl:#8f9bff;--cyan:#22b8e6;
+ --grad:linear-gradient(135deg,#4f6bff,#8a5cf6 62%,#c05cf0);--tx:#1b2338;--tx2:#5d6985;--tx3:#8c96b0;--bd:#e4e8f4;--r:12px}
+body{background:var(--bg);color:var(--tx)}
+:focus-visible{outline:2px solid #5b6cff;outline-offset:2px}
+
+/* AUTH */
+#auth{background:#eef1ff;overflow:hidden}
+#auth:before{content:'';position:absolute;inset:0;background-image:radial-gradient(#5b6cff22 1px,transparent 1px);background-size:22px 22px;
+ -webkit-mask-image:radial-gradient(ellipse at center,#000 30%,transparent 75%);mask-image:radial-gradient(ellipse at center,#000 30%,transparent 75%)}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;animation:drift 16s ease-in-out infinite alternate}
+.b1{width:460px;height:460px;background:#7c8cff;left:-120px;top:-140px}
+.b2{width:420px;height:420px;background:#d08bff;right:-100px;bottom:-120px;animation-delay:-6s}
+.b3{width:300px;height:300px;background:#6fd6ff;right:22%;top:-90px;animation-delay:-10s}
+@keyframes drift{to{transform:translate(50px,40px) scale(1.12)}}
+.aw{position:relative;width:410px;max-width:92vw}
+.brand{margin-bottom:22px}
+.brand-logo{width:92px;height:92px;margin:0 auto 14px;display:block;filter:drop-shadow(0 16px 30px rgba(91,108,255,.5));animation:flt 5s ease-in-out infinite}
+@keyframes flt{50%{transform:translateY(-6px)}}
+.brand h1{font-family:'Plus Jakarta Sans','Inter',sans-serif;font-size:46px;font-weight:800;letter-spacing:-1.5px;line-height:1;
+ background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.brand p{color:var(--tx2);font-size:13px;letter-spacing:0;margin-top:8px}
+.acard{position:relative;background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid #fff;
+ border-radius:24px;padding:26px;box-shadow:0 30px 80px rgba(79,70,229,.18),0 2px 0 #fff inset}
+.tabs{background:#eceffa}.tab{color:var(--tx2)}.tab.on{background:#fff;color:var(--tx);box-shadow:0 2px 8px rgba(40,50,110,.12)}
+.fi{background:#f6f7fd;border-color:#e2e6f5;color:var(--tx)}.fi:focus{border-color:#7c8cff;background:#fff;box-shadow:0 0 0 4px #5b6cff1f}
+.fi::placeholder{color:#a3accb}
+.btn-m,.btn-primary,.lock-btn{background:var(--grad)!important;color:#fff;box-shadow:0 10px 24px rgba(91,108,255,.35)}
+.btn-m:hover{opacity:1;transform:translateY(-1px);box-shadow:0 14px 30px rgba(91,108,255,.45)}
+.btn-m:disabled{opacity:.6;cursor:wait;transform:none}
+.auth-links{margin:2px 0 14px;justify-content:flex-end}.auth-links button{color:#5b6cff;font-weight:600;font-size:12px}
+.login-help{background:#f1f3ff;border-color:#e0e5ff;color:var(--tx2);text-align:left}
+.reg-ok{position:absolute;inset:0;z-index:5;border-radius:24px;background:rgba(255,255,255,.96);display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:24px}
+.reg-ok.on{display:flex;animation:pop .3s ease}
+@keyframes pop{from{opacity:0;transform:scale(.97)}}
+.reg-ok svg{width:74px;height:74px}
+.reg-ok circle{fill:none;stroke:#10b981;stroke-width:4;stroke-dasharray:176;stroke-dashoffset:176;animation:dr .6s .1s forwards}
+.reg-ok path{fill:none;stroke:#10b981;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:50;stroke-dashoffset:50;animation:dr .4s .6s forwards}
+@keyframes dr{to{stroke-dashoffset:0}}
+.reg-ok h3{font-size:20px;font-weight:800;margin-top:6px}.reg-ok p{font-size:13px;color:var(--tx2);line-height:1.6}
+
+/* RAIL / SIDEBAR */
+#app.on{grid-template-columns:68px 262px 1fr}
+.rail{background:#fff;border-color:var(--bd);padding:14px 0;gap:6px}
+.logo-svg{width:42px;height:42px;display:block;filter:drop-shadow(0 6px 12px rgba(91,108,255,.45))}
+.r-logo{margin-bottom:14px!important}
+.rb{color:#8c96b0}.rb:hover{background:#f1f3ff;color:#5b6cff}.rb.on{background:linear-gradient(135deg,#eceeff,#f4ecff);color:#5b6cff;box-shadow:inset 0 0 0 1px #5b6cff30}
+.sbar{background:#fff;border-color:var(--bd)}.sbar-title{font-family:'Plus Jakarta Sans','Inter',sans-serif;font-size:18px;font-weight:800}
+.ssrch,.msrch{background:#f3f5fc;border-color:transparent}.ssrch:focus-within,.msrch:focus-within{background:#fff;border-color:#c9d0ff}
+.ssec{color:var(--tx3);font-size:11px;letter-spacing:.2px}
+.gpin{background:linear-gradient(135deg,#eef0ff,#f6eeff);border-color:#e1e5ff}.gpin:hover,.gpin.on{background:linear-gradient(135deg,#e5e8ff,#f1e4ff);border-color:#c9d0ff}
+.gp-av{background:var(--grad);color:#fff;box-shadow:0 6px 14px rgba(91,108,255,.35)}
+.conv{padding:6px 8px}.conv:hover{background:#f4f6fd}.conv.on{background:#ebeeff}.cav{width:36px;height:36px}
+.cdot2{border-color:#fff}
+
+/* CHAT — thu gọn */
+.chat-v{background:#f5f6fc radial-gradient(circle at 85% 0,#e9ecff 0,transparent 45%),radial-gradient(circle at 0 100%,#f3eaff 0,transparent 40%)}
+.ch-head{background:rgba(255,255,255,.85);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);padding:8px 14px;gap:9px}
+.ch-info h3{font-size:13.5px}.ch-info p{font-size:10.5px}
+.ib{width:30px;height:30px;background:#f1f3ff;color:#6b77a6;border-color:transparent}.ib:hover{background:#e3e7ff;color:#4a5ad8}
+.msgs{padding:10px 16px 8px}
+.dsep{margin:8px 0 4px}.dsep span{font-size:10px;background:#e9ecfb;color:var(--tx2);padding:2px 10px}
+.mrow{display:flex;align-items:flex-end;gap:6px;margin-top:2px}.mrow.first{margin-top:9px}.mrow.me{justify-content:flex-end}
+.mav{width:28px;flex-shrink:0}
+.mcol{display:flex;flex-direction:column;min-width:0;max-width:72%}.mrow.me .mcol{align-items:flex-end}
+.mname{margin:0 0 2px 2px;padding:0;font-size:11px;font-weight:600;display:block;width:auto;cursor:pointer}
+.bbl{max-width:100%;padding:6px 11px;font-size:13.5px;line-height:1.42;background:#fff;color:var(--tx);border-radius:14px;box-shadow:0 1px 2px rgba(40,50,110,.08)}
+.mrow.first:not(.me) .bbl{border-top-left-radius:4px}.mrow.first.me .bbl{border-top-right-radius:4px}
+.mrow.me .bbl{background:var(--grad);color:#fff;box-shadow:0 4px 12px rgba(91,108,255,.28)}
+.bbl.recalled,.mrow.me .bbl.recalled{background:transparent!important;color:var(--tx3);box-shadow:none;border:1px dashed var(--p4);font-size:12.5px}
+.bt{float:right;margin:7px 0 -3px 10px;font-size:9.5px;opacity:.55;line-height:1}
+.rq{background:#ecefff;border-left-color:#7c8cff;color:var(--tx2);max-width:100%;font-size:10.5px;padding:3px 9px}
+.mrow.me .rq{background:#e9e4ff;border-left:none;border-right:3px solid #8a5cf6}
+.bacts{top:-27px;background:#fff;border-color:var(--bd);box-shadow:0 6px 18px rgba(40,50,110,.14)}
+.bacts:after{content:'';position:absolute;left:0;right:0;bottom:-8px;height:8px}
+.mrow.me .bacts{right:auto;left:8px}.mrow:not(.me) .bacts{left:auto;right:8px}
+.mrow.me .ep{right:auto;left:0}.ep{background:#fff;border-color:var(--bd)}
+.reacts{margin-top:2px;gap:3px}.rc{background:#fff;border-color:var(--bd);font-size:11px;padding:1px 7px;color:var(--tx)}
+.rbar{background:#fff;padding:5px 14px}
+.inp-wrap{padding:8px 12px;background:rgba(255,255,255,.9)}
+textarea.ti{min-height:34px;padding:7px 12px;font-size:13.5px;border-radius:17px;background:#f3f5fc;border-color:transparent}
+textarea.ti:focus{background:#fff;border-color:#c9d0ff}
+.inp-ico{width:34px;height:34px;background:#f1f3ff}.send-b{width:36px;height:36px;border-radius:50%;box-shadow:0 6px 14px rgba(91,108,255,.4)}
+.inp-lock{background:#f1f3ff;border-color:#e0e5ff}
+
+/* MODAL / ADMIN */
+.ov{background:rgba(27,35,70,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.modal{border-radius:22px;border-color:#fff;box-shadow:0 30px 80px rgba(40,50,110,.3)}
+.modal h3{font-family:'Plus Jakarta Sans','Inter',sans-serif;font-size:17px;font-weight:800}
+.mi:hover,.mi.cp:hover{background:#f4f6fd}.ptab.on{background:#fff;box-shadow:0 2px 8px rgba(40,50,110,.12)}.ptabs{background:#eceffa}
+.public-cover{background:radial-gradient(circle at 20% 20%,#ffffff88,transparent 42%),var(--grad)}
+.adm-h{font-family:'Plus Jakarta Sans','Inter',sans-serif}
+.pw-card{background:linear-gradient(135deg,#fff7ed,#fff1f2);border:1px solid #fed7aa;border-radius:14px;padding:12px 14px;margin-bottom:16px}
+.pw-card h4{font-size:13px;font-weight:700;color:#9a3412;margin-bottom:8px}
+.pw-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid #fde4cf;font-size:13px}
+.pw-row:first-of-type{border-top:none}.pw-row b{flex:1;min-width:0}.pw-row small{color:var(--tx3)}
+.pw-ok{background:#ecfdf5;border:1px solid #a7f3d0;color:#047857;border-radius:10px;padding:8px 12px;font-size:12.5px;margin-bottom:8px}
+.pw-ok code{background:#fff;padding:2px 7px;border-radius:6px;font-weight:700;user-select:all}
+.tag.a{background:#e8ebff;color:#4a5ad8}.tag.u{background:#f1f3fa}
+@media(prefers-reduced-motion:reduce){.blob,.brand-logo{animation:none}}
+@media(max-width:760px){#app.on{grid-template-columns:56px 190px minmax(0,1fr)}.mcol{max-width:84%}}
+@media(max-width:540px){#app.on{grid-template-columns:52px minmax(0,1fr)}#app.on.mobile-chat{grid-template-columns:52px minmax(0,1fr)}.logo-svg{width:36px;height:36px}}
+</style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f6bff"/><stop offset=".6" stop-color="#8a5cf6"/><stop offset="1" stop-color="#d45cf0"/></linearGradient>
+<linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f6bff"/><stop offset="1" stop-color="#8a5cf6"/></linearGradient>
+<symbol id="mello-logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="19" fill="url(#lg1)"/>
+<path d="M32 12.5c-10.8 0-19.5 7.6-19.5 17 0 5.3 2.8 10 7.2 13.2-.2 2.5-1.2 4.8-3 6.7a1 1 0 0 0 .9 1.7c4.2-.4 7.7-2 10.3-4.2 1.3.2 2.7.3 4.1.3 10.8 0 19.5-7.600 19.5-17s-8.700-17-19.500-17Z" fill="#fff"/>
+<path d="M22.500 37V26l9.500 8.200L41.500 26v11" fill="none" stroke="url(#lg2)" stroke-width="3.800" stroke-linecap="round" stroke-linejoin="round"/></symbol></defs></svg>
 
 <!-- AUTH -->
-<div id="auth">
+<div id="auth"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
 <div class="aw">
-  <div class="brand"><h1>Mello</h1><p>WORK COMMUNICATION AHOME</p></div>
+  <div class="brand"><svg class="brand-logo" viewBox="0 0 64 64" role="img" aria-label="Mello"><use href="#mello-logo"/></svg><h1>Mello</h1><p>Nhắn tin công việc, gọn và nhanh</p></div>
   <div class="acard">
+    <div class="reg-ok" id="reg-ok"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28"/><path d="M20 33l9 9 16-18"/></svg><h3>Đăng ký thành công</h3><p>Đang chuyển về màn hình đăng nhập<br>và điền sẵn tài khoản cho bạn…</p></div>
     <div class="tabs">
       <button class="tab on" onclick="swTab('li')">Đăng nhập</button>
       <button class="tab" onclick="swTab('rg')">Đăng ký</button>
@@ -360,7 +471,7 @@ body{background:#dce1e6;color:var(--tx)}
       <label class="fl">Mật khẩu</label>
       <input class="fi" type="password" id="li-p" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
       <div class="auth-links"><button type="button" onclick="openForgot()">Quên mật khẩu?</button></div>
-      <div class="login-help">Bạn có thể khôi phục qua email đã đăng ký. Nếu không còn truy cập email, vui lòng liên hệ quản trị viên.</div>
+      <div class="login-help">Quên mật khẩu? Bấm “Quên mật khẩu” để gửi yêu cầu tới quản trị viên, họ sẽ cấp lại mật khẩu cho bạn.</div>
       <button class="btn-m" onclick="doLogin()">Đăng nhập</button>
     </div>
 
@@ -372,8 +483,6 @@ body{background:#dce1e6;color:var(--tx)}
       <input class="fi" id="rg-u" placeholder="username (chữ thường, không dấu)" autocomplete="off">
       <label class="fl">Bộ phận</label>
       <input class="fi" id="rg-dept" placeholder="Ví dụ: Kho vận, Kế toán, Nhân sự">
-      <label class="fl">Email khôi phục</label>
-      <input class="fi" id="rg-email" type="email" inputmode="email" placeholder="ten@email.com" autocomplete="email">
       <label class="fl">Mật khẩu</label>
       <input class="fi" type="password" id="rg-p" placeholder="Tối thiểu 6 ký tự">
       <label class="fl">Nhập lại mật khẩu</label>
@@ -390,12 +499,12 @@ body{background:#dce1e6;color:var(--tx)}
 <div id="app">
   <!-- RAIL -->
   <div class="rail">
-    <div class="r-logo" title="Mello"><span class="logo-mark">m</span></div>
+    <div class="r-logo" title="Mello"><svg class="logo-svg" viewBox="0 0 64 64" aria-hidden="true"><use href="#mello-logo"/></svg></div>
     <button class="rb on" id="rb-chat" onclick="setView('chat')" title="Tin nhắn">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l1.7-3.4A7.5 7.5 0 1 1 20 11.5Z"/></svg><span class="rbadge" id="nb"></span>
     </button>
     <button class="rb" id="rb-ppl" onclick="openPpl()" title="Thành viên &amp; kết bạn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M10 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="rbadge" id="fb"></span></button>
-    <button class="rb" id="adm-btn" onclick="setView('admin')" title="Quản trị" style="display:none">⚙️</button>
+    <button class="rb" id="adm-btn" onclick="setView('admin')" title="Quản trị" style="display:none">⚙️<span class="rbadge" id="ab"></span></button>
     <div class="rg"></div>
     <div class="rav" id="rav" onclick="openProfile()">
       <div class="rav-menu" onclick="event.stopPropagation()">
@@ -479,7 +588,7 @@ body{background:#dce1e6;color:var(--tx)}
   <!-- ADMIN VIEW -->
   <div class="adm" id="adm-v">
     <div class="adm-h">⚙️ Quản trị — Mello</div>
-    <div class="adm-b">
+    <div class="adm-b"><div id="pw-box"></div>
       <table class="atbl">
         <thead><tr>
           <th>Thành viên</th><th>Username</th><th>Trạng thái</th><th>Quyền</th><th>Hành động</th>
@@ -542,20 +651,18 @@ body{background:#dce1e6;color:var(--tx)}
 </div>
 </div>
 
-<!-- EMAIL PASSWORD RECOVERY -->
+<!-- FORGOT PASSWORD -->
 <div class="ov" id="forgot-ov" onclick="if(event.target===this)closeOv('forgot-ov')"><div class="modal recovery-modal">
-  <div class="modal-icon">↻</div><h3>Khôi phục mật khẩu</h3>
-  <p class="recovery-copy">Nhập email đã đăng ký. Nếu email khớp với tài khoản, hệ thống sẽ gửi liên kết bảo mật để đặt lại mật khẩu.</p>
-  <div class="recovery-note"><strong>Không nhận được email?</strong><p>Kiểm tra thư mục Spam/Thư rác. Nếu email không còn truy cập được hoặc tài khoản chưa có email khôi phục, vui lòng liên hệ quản trị viên.</p></div>
-  <div id="recovery-step1">
-    <label class="fl" for="forgot-email">Email khôi phục</label><input class="fi" id="forgot-email" type="email" inputmode="email" autocomplete="email" placeholder="Email đã đăng ký">
-    <button class="btn-m" id="send-otp-btn" onclick="requestRecoveryEmail()">Gửi liên kết khôi phục</button>
+  <div class="modal-icon">🔑</div><h3>Quên mật khẩu</h3>
+  <div id="fg-form">
+    <p class="recovery-copy">Nhập tên đăng nhập, yêu cầu sẽ được gửi tới quản trị viên. Khi có thông báo, quản trị viên sẽ cấp lại mật khẩu cho bạn.</p>
+    <label class="fl" for="fg-u">Tên đăng nhập</label>
+    <input class="fi" id="fg-u" placeholder="username" autocomplete="off" onkeydown="if(event.key==='Enter')sendPwRequest()">
+    <button class="btn-m" id="fg-btn" onclick="sendPwRequest()">Gửi yêu cầu cho quản trị viên</button>
   </div>
-  <div id="recovery-step2" style="display:none">
-    <p class="recovery-copy">Nếu email đã được đăng ký và hệ thống gửi thư thành công, hãy mở hộp thư và làm theo liên kết đặt lại mật khẩu.</p>
-  </div>
+  <div id="fg-done" style="display:none"><p class="recovery-copy" id="fg-done-txt"></p></div>
   <div id="recovery-status" class="recovery-result" role="status" aria-live="polite" style="display:none"></div>
-  <div class="mfoot" style="gap:8px;margin-top:8px"><button class="btn-sec" onclick="closeOv('forgot-ov')">Đóng</button><button class="btn-sec" id="recovery-back" style="display:none" onclick="recoveryBack()">Quay lại</button></div>
+  <div class="mfoot" style="margin-top:8px"><button class="btn-sec" onclick="closeOv('forgot-ov')">Đóng</button></div>
 </div></div>
 <!-- PUBLIC PROFILE -->
 <div class="ov" id="public-prof-ov"><div class="modal public-profile-modal">
@@ -722,11 +829,9 @@ async function doReg(){
   const name=document.getElementById('rg-n').value.trim();
   const u=document.getElementById('rg-u').value.trim().toLowerCase().replace(/\s+/g,'');
   const department=document.getElementById('rg-dept').value.trim();
-  const email=document.getElementById('rg-email').value.trim().toLowerCase();
   const p=document.getElementById('rg-p').value;
   const p2=document.getElementById('rg-p2').value;
-  if(!name||!u||!department||!email||!p||!p2){setErr('Vui lòng điền đầy đủ thông tin, bao gồm bộ phận và email khôi phục.');return;}
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setErr('Vui lòng nhập địa chỉ email hợp lệ.');return;}
+  if(!name||!u||!department||!p||!p2){setErr('Vui lòng điền đầy đủ thông tin.');return;}
   if(p.length<6){setErr('Mật khẩu tối thiểu 6 ký tự.');return;}
   if(p!==p2){setErr('Mật khẩu nhập lại không khớp.');return;}
   if(!/^[a-z0-9_]+$/.test(u)){setErr('Username chỉ dùng a-z, 0-9, dấu _');return;}
@@ -734,13 +839,18 @@ async function doReg(){
   if(ex){setErr('Tên đăng nhập đã tồn tại.');return;}
   const color=selC();
   const {data:nu,error}=await sb.from('profiles')
-    .insert({username:u,full_name:name,role:'Nhân viên',department:department,recovery_email:email,password:p,color}).select().single();
-  if(error||!nu){console.error('Mello registration error:',error);setErr(error?.message?.toLowerCase().includes('column')?'Chưa thể tạo tài khoản: cần bổ sung cột department và recovery_email trong bảng profiles trên Supabase.':'Lỗi tạo tài khoản. Vui lòng kiểm tra cấu hình bảng profiles trên Supabase.');return;}
+    .insert({username:u,full_name:name,role:'Nhân viên',department:department,password:p,color}).select().single();
+  if(error||!nu){console.error('Mello registration error:',error);setErr(error?.message?.toLowerCase().includes('column')?'Chưa thể tạo tài khoản: cần có cột department trong bảng profiles trên Supabase.':'Lỗi tạo tài khoản. Vui lòng kiểm tra cấu hình bảng profiles trên Supabase.');return;}
   await sb.from('room_members').upsert({room_id:GRP,user_id:nu.id},{onConflict:'room_id,user_id'});
   await sb.from('messages').insert({room_id:GRP,sender_id:nu.id,content:`👋 ${name} vừa tham gia Mello!`});
-  setOk('Tài khoản đã tạo! Vui lòng đăng nhập.');
-  document.getElementById('li-u').value=u;
-  swTab('li');
+  setErr('');
+  ['rg-n','rg-u','rg-dept','rg-p','rg-p2'].forEach(id=>document.getElementById(id).value='');
+  const box=document.getElementById('reg-ok');box.classList.add('on');
+  setTimeout(()=>{
+    box.classList.remove('on');swTab('li');
+    document.getElementById('li-u').value=u;document.getElementById('li-p').value=p;
+    setOk('Đăng ký thành công! Tài khoản đã được điền sẵn, bấm “Đăng nhập” để vào.');
+  },2300);
 }
 
 // ── STATE (mới) ──
@@ -770,6 +880,7 @@ async function boot(user){
   await loadConvs();
   await loadGrpLast();
   subscribeRT();
+  initAdminNotify();
   openGroup();
 }
 
@@ -779,7 +890,7 @@ async function doLogout(){
   localStorage.removeItem('mello_uid');
   if(rtChan)sb.removeChannel(rtChan);
   if(rtFr)sb.removeChannel(rtFr);
-  rtChan=null;rtFr=null;
+  if(rtPw)sb.removeChannel(rtPw);rtChan=null;rtFr=null;rtPw=null;pwReqs=[];pwDone=[];
   ME=null;activeRoom=null;activeOther=null;replyTo=null;allMsgs=[];
   friendships=[];convs=new Map();grpLast=null;nonMember.clear();
   document.getElementById('clist').innerHTML='';
@@ -940,7 +1051,7 @@ function renderConvList(){
     (b.last?+new Date(b.last.created_at):0)-(a.last?+new Date(a.last.created_at):0));
   arr.forEach(c=>{
     const other=allP.find(p=>p.id===c.other);if(!other)return;
-    if(q&&!other.full_name.toLowerCase().includes(q)&&!other.username.toLowerCase().includes(q))return;
+    if(q&&!other.full_name.toLowerCase().includes(q))return;
     clist.appendChild(buildConv(c,other));
   });
 }
@@ -986,7 +1097,7 @@ async function openDMRoom(rid,other){
   activeRoom=rid;activeOther=other;clearReply();
   document.getElementById('gpin').classList.remove('on');
   document.querySelectorAll('.conv').forEach(c=>c.classList.toggle('on',c.dataset.rid===rid));
-  showChatHeader(other.full_name,other,false,`@${other.username}`);
+  showChatHeader(other.full_name,other,false,other.role||'Thành viên');
   applyInputLock();
   await loadMsgs(true);
 }
@@ -1041,40 +1152,44 @@ function renderMsgs(msgs,forceBottom){
   const prevTop=wrap.scrollTop;
   const stick=forceBottom||(wrap.scrollHeight-wrap.scrollTop-wrap.clientHeight<80);
   wrap.innerHTML='';
-  let lastDate='',lastSender='';
+  let lastDate='',lastSender='',lastT=0;
+  const inGrp=activeRoom===GRP;
   msgs.forEach(m=>{
+    const t=+new Date(m.created_at);
     const ds=new Date(m.created_at).toLocaleDateString('vi-VN');
+    let newDay=false;
     if(ds!==lastDate){
-      lastDate=ds;const sep=document.createElement('div');sep.className='dsep';
+      lastDate=ds;newDay=true;const sep=document.createElement('div');sep.className='dsep';
       sep.innerHTML=`<span>${ds}</span>`;wrap.appendChild(sep);
     }
     const isSelf=m.sender_id===ME.id;
     const sender=gP(m.sender_id);
-    const showName=!isSelf&&m.sender_id!==lastSender&&activeRoom===GRP;
-    lastSender=m.sender_id;
+    const first=newDay||m.sender_id!==lastSender||t-lastT>300000;
+    lastSender=m.sender_id;lastT=t;
 
-    const grp=document.createElement('div');grp.className='mgrp'+(isSelf?' me':'');
-    if(showName){
-      const avEl=makeAvEl(sender,22,'50%');
-      avEl.style.display='inline-flex';avEl.style.verticalAlign='middle';avEl.style.marginRight='6px';
-      const nameRow=document.createElement('div');nameRow.className='mname';
-      nameRow.style.color=sender.color||'var(--tx3)';
-      avEl.classList.add('profile-trigger');
-      avEl.title='Xem hồ sơ';avEl.style.cursor='pointer';avEl.onclick=()=>showPublicProfile(sender.id);
-      nameRow.appendChild(avEl);
-      const senderName=document.createElement('span');senderName.textContent=sender.full_name;senderName.className='profile-trigger';senderName.title='Xem hồ sơ';senderName.onclick=()=>showPublicProfile(sender.id);
-      nameRow.appendChild(senderName);
-      grp.appendChild(nameRow);
+    const row=document.createElement('div');row.className='mrow'+(isSelf?' me':'')+(first?' first':'');
+    if(!isSelf&&inGrp){
+      const av=document.createElement('div');av.className='mav';
+      if(first){
+        const a=makeAvEl(sender,28,'50%');a.classList.add('profile-trigger');a.title='Xem hồ sơ';
+        a.onclick=()=>showPublicProfile(sender.id);av.appendChild(a);
+      }
+      row.appendChild(av);
+    }
+    const col=document.createElement('div');col.className='mcol';
+    if(first&&!isSelf&&inGrp){
+      const nm=document.createElement('span');nm.className='mname';nm.textContent=sender.full_name;
+      nm.style.color=sender.color||'var(--tx2)';nm.title='Xem hồ sơ';nm.onclick=()=>showPublicProfile(sender.id);
+      col.appendChild(nm);
     }
     if(m.reply_to&&!m.deleted){
       const rm=allMsgs.find(x=>x.id===m.reply_to);
       if(rm){
         const rq=document.createElement('div');rq.className='rq';
         rq.textContent=rm.deleted?'↩ '+RECALLED_TXT:`↩ ${gP(rm.sender_id).full_name}: ${(rm.content||'').slice(0,60)}`;
-        grp.appendChild(rq);
+        col.appendChild(rq);
       }
     }
-
     const bbl=document.createElement('div');bbl.className='bbl'+(m.deleted?' recalled':'');
     if(m.deleted){
       bbl.textContent=RECALLED_TXT;
@@ -1092,14 +1207,10 @@ function renderMsgs(msgs,forceBottom){
       bbl.appendChild(ep);
       const body=document.createElement('span');body.innerHTML=renderContent(m.content||'');
       bbl.appendChild(body);
-      if(m.edited){
-        const ed=document.createElement('span');
-        ed.style.cssText='font-size:10px;opacity:.4;margin-left:4px';ed.textContent='·sửa';
-        bbl.appendChild(ed);
-      }
+      if(m.edited){const ed=document.createElement('span');ed.style.cssText='font-size:10px;opacity:.5;margin-left:4px';ed.textContent='·sửa';bbl.appendChild(ed);}
+      const tm=document.createElement('span');tm.className='bt';tm.textContent=ftm(m.created_at);bbl.appendChild(tm);
     }
-    grp.appendChild(bbl);
-
+    col.appendChild(bbl);
     if(!m.deleted){
       const rmap={};
       (m.reactions||[]).forEach(r=>{rmap[r.emoji]=rmap[r.emoji]||[];rmap[r.emoji].push(r.user_id);});
@@ -1110,12 +1221,10 @@ function renderMsgs(msgs,forceBottom){
           const sp=document.createElement('span');sp.className='rc';
           sp.textContent=`${e} ${us.length}`;sp.onclick=()=>addR(m.id,e);rd.appendChild(sp);
         });
-        grp.appendChild(rd);
+        col.appendChild(rd);
       }
     }
-    const tm=document.createElement('div');tm.className='mtime';tm.textContent=ftm(m.created_at);
-    grp.appendChild(tm);
-    wrap.appendChild(grp);
+    row.appendChild(col);wrap.appendChild(row);
   });
   wrap.scrollTop=stick?wrap.scrollHeight:prevTop;
 }
@@ -1247,7 +1356,7 @@ async function onProfChange(){
   renderConvList();
   if(activeOther){
     activeOther=gP(activeOther.id);
-    showChatHeader(activeOther.full_name,activeOther,false,`@${activeOther.username}`);
+    showChatHeader(activeOther.full_name,activeOther,false,activeOther.role||'Thành viên');
   } else if(activeRoom===GRP){
     document.getElementById('ch-sub').textContent=`${allP.length} thành viên`;
   }
@@ -1284,7 +1393,7 @@ function renderPpl(){
   const el=document.getElementById('ppl-list');el.innerHTML='';
   const q=(document.getElementById('ppl-q').value||'').toLowerCase();
   let list=allP.filter(p=>p.id!==ME.id&&
-    (p.full_name.toLowerCase().includes(q)||p.username.toLowerCase().includes(q)));
+    p.full_name.toLowerCase().includes(q));
   if(pplTab==='req')list=list.filter(p=>relOf(p.id).s==='received');
   else if(pplTab==='fr')list=list.filter(p=>relOf(p.id).s==='friends');
   else list.sort((a,b)=>(relOf(a.id).s==='received'?0:1)-(relOf(b.id).s==='received'?0:1));
@@ -1302,7 +1411,7 @@ function renderPpl(){
     const info=document.createElement('div');info.style.cssText='flex:1;min-width:0';
     const n=document.createElement('div');n.className='min';n.textContent=p.full_name;
     const u=document.createElement('div');u.className='mis';
-    u.textContent='@'+p.username+(r.s==='received'?' · muốn kết bạn với bạn':'');
+    u.textContent=r.s==='received'?'Muốn kết bạn với bạn':(p.role||'Thành viên');
     n.classList.add('profile-trigger');u.classList.add('profile-trigger');n.onclick=()=>showPublicProfile(p.id);u.onclick=()=>showPublicProfile(p.id);
     info.append(n,u);d.appendChild(info);
     d.onclick=(ev)=>{if(!ev.target.closest('button'))showPublicProfile(p.id);};
@@ -1357,9 +1466,9 @@ function showPublicProfile(uid){
   if(p.avatar_url&&IMG_OK.test(p.avatar_url)){const im=document.createElement('img');im.src=p.avatar_url;im.alt='Ảnh đại diện';av.appendChild(im);}
   else {av.textContent=p.avatar_emoji||ini(p.full_name);av.style.fontSize=p.avatar_emoji?'34px':'24px';}
   document.getElementById('pub-name').textContent=p.full_name||'Người dùng Mello';
-  document.getElementById('pub-user').textContent='@'+(p.username||'');
+  document.getElementById('pub-user').textContent=p.role||'Thành viên';
   const details=document.getElementById('pub-details');details.innerHTML='';
-  const chips=[['♙ '+(p.role||'Thành viên')],['● '+(p.is_active?'Đang hoạt động':'Tài khoản không hoạt động')]];
+  const chips=[['● '+(p.is_active?'Đang hoạt động':'Tài khoản không hoạt động')]];
   chips.forEach(([label])=>{const x=document.createElement('span');x.className='profile-chip';x.textContent=label;details.appendChild(x);});
   const actions=document.getElementById('pub-actions');actions.innerHTML='';const r=relOf(uid);
   if(r.s==='friends')actions.appendChild(pBtn('✉ Nhắn tin','#3978f6','#fff',()=>{closeOv('public-prof-ov');openDM(uid);}));
@@ -1368,34 +1477,78 @@ function showPublicProfile(uid){
   else {actions.appendChild(pBtn('✓ Chấp nhận','#3978f6','#fff',()=>acceptReq(r.f.id)));actions.appendChild(pBtn('Từ chối','var(--p3)','var(--tx2)',()=>declineReq(r.f.id)));}
   document.getElementById('public-prof-ov').classList.add('on');
 }
+function setRecoveryStatus(message,isError=false){const el=document.getElementById('recovery-status');el.textContent=message;el.style.display=message?'block':'none';el.style.color=isError?'#c0392b':'#52677b';}
 function openForgot(){
-  document.getElementById('recovery-step1').style.display='';
-  document.getElementById('recovery-step2').style.display='none';
-  document.getElementById('recovery-back').style.display='none';
-  document.getElementById('forgot-email').value='';
-  setRecoveryStatus('');
-  document.getElementById('forgot-ov').classList.add('on');
+  document.getElementById('fg-u').value=document.getElementById('li-u').value.trim();
+  document.getElementById('fg-form').style.display='';document.getElementById('fg-done').style.display='none';
+  setRecoveryStatus('');document.getElementById('forgot-ov').classList.add('on');
 }
-function setRecoveryStatus(message,isError=false){const el=document.getElementById('recovery-status');el.textContent=message;el.style.display=message?'block':'none';el.style.color=isError?'#b54747':'#52677b';}
-function recoveryBack(){document.getElementById('recovery-step1').style.display='';document.getElementById('recovery-step2').style.display='none';document.getElementById('recovery-back').style.display='none';setRecoveryStatus('');}
-async function requestRecoveryEmail(){
-  const email=document.getElementById('forgot-email').value.trim().toLowerCase();
-  if(!email){setRecoveryStatus('Vui lòng nhập email khôi phục.',true);return;}
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setRecoveryStatus('Địa chỉ email chưa đúng định dạng. Vui lòng kiểm tra lại.',true);return;}
-  const btn=document.getElementById('send-otp-btn');btn.disabled=true;btn.textContent='Đang gửi yêu cầu…';setRecoveryStatus('');
+async function sendPwRequest(){
+  const u=document.getElementById('fg-u').value.trim().toLowerCase();
+  if(!u){setRecoveryStatus('Vui lòng nhập tên đăng nhập.',true);return;}
+  const btn=document.getElementById('fg-btn');btn.disabled=true;btn.textContent='Đang gửi…';setRecoveryStatus('');
   try{
-    // This Edge Function must send the reset link using a trusted server-side email provider.
-    const {data,error}=await sb.functions.invoke('password-recovery',{body:{action:'send_email',email}});
-    if(error)throw error;
-    if(data?.ok!==true)throw new Error(data?.message||'Không thể gửi liên kết khôi phục.');
-    document.getElementById('recovery-step1').style.display='none';
-    document.getElementById('recovery-step2').style.display='';
-    setRecoveryStatus('Nếu email thuộc một tài khoản hợp lệ, liên kết khôi phục sẽ được gửi. Hãy kiểm tra cả thư mục Spam/Thư rác. Nếu không nhận được thư, vui lòng liên hệ quản trị viên.');
-  }catch(err){
-    console.error('Password recovery email request failed:',err);
-    setRecoveryStatus('Chức năng khôi phục qua email chưa được cấu hình hoặc hiện không khả dụng. Vui lòng liên hệ quản trị viên. Cần triển khai Edge Function “password-recovery” để gửi email an toàn.',true);
-  }finally{btn.disabled=false;btn.textContent='Gửi liên kết khôi phục';}
+    const {data:pr}=await sb.from('profiles').select('id,full_name').eq('username',u).maybeSingle();
+    if(!pr){setRecoveryStatus('Không tìm thấy tên đăng nhập này. Hãy kiểm tra lại.',true);return;}
+    const {data:ex}=await sb.from('password_requests').select('id').eq('user_id',pr.id).eq('status','pending').limit(1);
+    let again=false;
+    if(ex&&ex.length)again=true;
+    else{
+      const {error}=await sb.from('password_requests').insert({user_id:pr.id,username:u,full_name:pr.full_name,status:'pending'});
+      if(error){console.error(error);setRecoveryStatus('Chưa gửi được yêu cầu. Quản trị hệ thống cần tạo bảng password_requests trên Supabase.',true);return;}
+    }
+    document.getElementById('fg-form').style.display='none';document.getElementById('fg-done').style.display='';
+    document.getElementById('fg-done-txt').textContent=again
+      ?'Yêu cầu của bạn đã được gửi trước đó và đang chờ quản trị viên xử lý.'
+      :'Đã gửi yêu cầu tới quản trị viên. Khi được cấp lại, mật khẩu mới sẽ do quản trị viên gửi cho bạn.';
+  }finally{btn.disabled=false;btn.textContent='Gửi yêu cầu cho quản trị viên';}
 }
+
+// ── ADMIN: yêu cầu cấp lại mật khẩu ──
+let pwReqs=[],pwDone=[],rtPw=null;
+async function loadPwReqs(){
+  if(!ME||!ME.is_admin)return;
+  const {data,error}=await sb.from('password_requests').select('*').eq('status','pending').order('created_at');
+  pwReqs=error?[]:(data||[]);
+  const ab=document.getElementById('ab');ab.textContent=pwReqs.length>9?'9+':pwReqs.length;ab.classList.toggle('on',pwReqs.length>0);
+  renderPwBox();
+}
+function initAdminNotify(){
+  if(!ME.is_admin)return;
+  loadPwReqs();
+  rtPw=sb.channel('mello-pw').on('postgres_changes',{event:'*',schema:'public',table:'password_requests'},p=>{
+    if(p.eventType==='INSERT'&&p.new)toast(`${p.new.full_name||p.new.username} yêu cầu cấp lại mật khẩu`,'🔑');
+    loadPwReqs();
+  }).subscribe();
+}
+function renderPwBox(){
+  const box=document.getElementById('pw-box');if(!box)return;box.innerHTML='';
+  pwDone.forEach(d=>{const x=document.createElement('div');x.className='pw-ok';
+    x.innerHTML=`Đã cấp lại cho <b>${esc(d.name)}</b>. Mật khẩu mới: <code>${esc(d.pw)}</code> — hãy gửi cho người dùng.`;box.appendChild(x);});
+  if(!pwReqs.length)return;
+  const card=document.createElement('div');card.className='pw-card';
+  card.innerHTML=`<h4>🔑 ${pwReqs.length} yêu cầu cấp lại mật khẩu</h4>`;
+  pwReqs.forEach(r=>{
+    const row=document.createElement('div');row.className='pw-row';
+    row.innerHTML=`<b>${esc(r.full_name||r.username)}<br><small>@${esc(r.username)} · ${ftm(r.created_at)}</small></b>`;
+    row.appendChild(pBtn('Cấp lại mật khẩu','var(--blue)','#fff',()=>resetPw(r)));
+    row.appendChild(pBtn('Bỏ qua','var(--p3)','var(--tx2)',()=>closePwReq(r.id)));
+    card.appendChild(row);
+  });
+  box.appendChild(card);
+}
+async function resetPw(r){
+  const suggest=Math.random().toString(36).slice(2,8)+Math.floor(10+Math.random()*89);
+  const v=prompt(`Đặt mật khẩu mới cho ${r.full_name||r.username} (tối thiểu 6 ký tự):`,suggest);
+  if(v===null){renderPwBox();return;}
+  if(v.length<6){toast('Mật khẩu tối thiểu 6 ký tự','❌');renderPwBox();return;}
+  const {error}=await sb.from('profiles').update({password:v}).eq('id',r.user_id);
+  if(error){toast('Không đổi được mật khẩu','❌');renderPwBox();return;}
+  await sb.from('password_requests').update({status:'done'}).eq('id',r.id);
+  pwDone.unshift({name:r.full_name||r.username,pw:v});
+  toast('Đã cấp lại mật khẩu','🔑');loadPwReqs();
+}
+async function closePwReq(id){await sb.from('password_requests').update({status:'dismissed'}).eq('id',id);loadPwReqs();}
 
 // ── PROFILE MODAL ──
 function openProfile(){
@@ -1497,6 +1650,7 @@ function setView(v){
 
 // ── ADMIN ──
 async function loadAdminU(){
+  loadPwReqs();
   const {data}=await sb.from('profiles').select('*').order('created_at');
   const tb=document.getElementById('atbody');tb.innerHTML='';
   (data||[]).forEach(u=>{
