@@ -442,6 +442,66 @@ textarea.ti:focus{background:#fff;border-color:#c9d0ff}
 @media(max-width:760px){#app.on{grid-template-columns:56px 190px minmax(0,1fr)}.mcol{max-width:84%}}
 @media(max-width:540px){#app.on{grid-template-columns:52px minmax(0,1fr)}#app.on.mobile-chat{grid-template-columns:52px minmax(0,1fr)}.logo-svg{width:36px;height:36px}}
 </style>
+<style id="v3">
+/* ===== v3: nền xanh dương đậm + khung chat gọn, không tràn màn ===== */
+html,body{height:100%;overflow:hidden}
+body{background:radial-gradient(ellipse at 15% 10%,#2352c9 0,transparent 50%),radial-gradient(ellipse at 90% 95%,#1a3fa8 0,transparent 55%),linear-gradient(160deg,#0a1f5c,#0b2a7a 55%,#071a4d);background-attachment:fixed}
+/* đăng nhập */
+#auth{background:radial-gradient(ellipse at 20% 15%,#2a5be0 0,transparent 55%),linear-gradient(160deg,#0a1f5c,#0b2a7a 60%,#071a4d)}
+#auth:before{background-image:radial-gradient(#ffffff26 1px,transparent 1px)}
+.blob{opacity:.5}.b1{background:#3b6dff}.b2{background:#5b3df0}.b3{background:#14a8ff}
+.brand h1{background:linear-gradient(135deg,#fff,#b9ccff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.brand p{color:#b9c8f5}
+.brand-logo{filter:drop-shadow(0 0 28px rgba(110,150,255,.75)) drop-shadow(0 16px 30px rgba(0,0,0,.4))}
+.acard{background:rgba(255,255,255,.94);border-color:#ffffff55;box-shadow:0 30px 90px rgba(0,10,50,.55)}
+/* cửa sổ ứng dụng gọn, vừa màn hình */
+#app.on{width:min(1180px,calc(100vw - 32px));height:min(calc(100dvh - 32px),820px);margin:16px auto;border-radius:22px;overflow:hidden;
+ grid-template-columns:64px 250px minmax(0,1fr);grid-template-rows:minmax(0,1fr);box-shadow:0 30px 90px rgba(0,8,40,.6),0 0 0 1px #ffffff1a}
+.rail,.sbar,.chat-v,.adm{min-height:0}
+.rail{background:linear-gradient(180deg,#0b2260,#0a1a4a);border-color:#ffffff12}
+.rail .rb{color:#9db4ee}.rail .rb:hover{background:#ffffff14;color:#fff}.rail .rb.on{background:#ffffff22;color:#fff;box-shadow:none}
+.rav{border-color:#ffffff40}
+.chat-v{background:radial-gradient(circle at 80% 0,#2a5be055 0,transparent 50%),linear-gradient(180deg,#0f2d7a,#0b2263)}
+#active-chat{flex:1;min-height:0;height:auto!important}
+.msgs{min-height:0;padding:8px 14px}
+.ch-head{background:rgba(255,255,255,.96)}
+.inp-wrap{background:rgba(255,255,255,.96)}.rbar{background:#fff}
+.dsep span{background:#ffffff1f;color:#d3defa}
+.empty h3{color:#fff}.empty p{color:#aebfec}.eico{opacity:.25}
+.bbl{box-shadow:0 1px 3px rgba(0,10,50,.3)}
+.mrow.me .bbl{background:linear-gradient(135deg,#3b82f6,#6366f1);box-shadow:0 4px 12px rgba(20,60,200,.4)}
+.mname{color:#c9d7ff!important}
+.adm{background:var(--bg)}
+@media(max-width:760px){#app.on{grid-template-columns:54px 180px minmax(0,1fr)}}
+@media(max-width:540px){#app.on{width:100vw;height:100dvh;margin:0;border-radius:0;grid-template-columns:52px minmax(0,1fr)}#app.on.mobile-chat{grid-template-columns:52px minmax(0,1fr)}}
+</style>
+<style id="v4">
+/* ===== v4: nền xanh nhẹ + sửa thanh Thu hồi bị tràn ===== */
+body{background:linear-gradient(160deg,#c6d8f9,#e4ecfb 55%,#d2def8);background-attachment:fixed}
+#auth{background:radial-gradient(ellipse at 20% 15%,#ffffffaa 0,transparent 55%),linear-gradient(160deg,#c6d8f9,#e4ecfb 60%,#d2def8)}
+#auth:before{background-image:radial-gradient(#5b6cff22 1px,transparent 1px)}
+.blob{opacity:.4}.b1{background:#8fb0ff}.b2{background:#c5a8ff}.b3{background:#8fdcff}
+.brand h1{background:linear-gradient(135deg,#3b5bdb,#7c5cf0);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.brand p{color:#5d6985}
+.brand-logo{filter:drop-shadow(0 14px 26px rgba(91,108,255,.4))}
+.acard{background:rgba(255,255,255,.82);border-color:#fff;box-shadow:0 24px 70px rgba(70,100,180,.22)}
+#app.on{box-shadow:0 24px 70px rgba(60,90,160,.28),0 0 0 1px #ffffffaa}
+.rail{background:#eef3fd;border-color:#dfe7f7}
+.rail .rb{color:#7c8cb5}.rail .rb:hover{background:#fff;color:#3b5bdb}.rail .rb.on{background:#fff;color:#3b5bdb;box-shadow:0 2px 8px rgba(60,90,160,.15)}
+.rav{border-color:#fff}
+.chat-v{background:radial-gradient(circle at 85% 0,#ffffff99 0,transparent 50%),linear-gradient(180deg,#eaf1fd,#dde8fa)}
+.dsep span{background:#ffffffb0;color:#5d6985}
+.empty h3{color:var(--tx)}.empty p{color:var(--tx2)}.eico{opacity:.18}
+.bbl{box-shadow:0 1px 3px rgba(60,90,160,.14)}
+.mrow.me .bbl{background:linear-gradient(135deg,#5b8def,#7a86f2);box-shadow:0 3px 10px rgba(91,120,240,.28)}
+.mname{color:#4a5d8f!important}
+/* thanh Thu hồi / cảm xúc luôn nằm trong khung nhìn */
+.mrow.me .bacts,.mrow.me .ep{left:auto;right:0}
+.mrow:not(.me) .bacts,.mrow:not(.me) .ep{right:auto;left:0}
+.bacts{white-space:nowrap}
+.bacts .ba{font-size:11.5px;padding:2px 6px}
+.mrow:first-of-type .bacts,.dsep+.mrow .bacts{top:auto;bottom:-27px}
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
