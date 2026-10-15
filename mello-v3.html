@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mello</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#07101e;--p1:#0c1828;--p2:#112038;--p3:#172d50;--p4:#1e3868;
+  --blue:#2563eb;--blue-l:#3b82f6;--blue-xl:#93c5fd;--cyan:#0ea5e9;
+  --grad:linear-gradient(135deg,#1d4ed8,#2563eb,#0ea5e9);
+  --tx:#dce8ff;--tx2:#6e9fd4;--tx3:#2f527a;
+  --bd:#152944;--green:#10b981;--red:#ef4444;--r:12px;
+}
+*{font-family:'Inter',sans-serif;}
+body{background:var(--bg);color:var(--tx);height:100vh;overflow:hidden;}
+
+/* ── AUTH ── */
+#auth{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 20% 50%,#0c2050 0%,#07101e 65%);}
+.aw{width:390px;}
+.brand{text-align:center;margin-bottom:28px;}
+.brand h1{font-size:50px;font-weight:800;letter-spacing:-3px;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.brand p{color:var(--tx3);font-size:11px;letter-spacing:1.5px;margin-top:2px;}
+.acard{background:var(--p1);border:1px solid var(--bd);border-radius:20px;padding:30px;
+  box-shadow:0 24px 70px rgba(0,0,0,.55);}
+.tabs{display:flex;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:22px;}
+.tab{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:500;color:var(--tx3);
+  border-radius:7px;cursor:pointer;transition:.18s;border:none;background:transparent;}
+.tab.on{background:var(--p2);color:var(--tx);}
+.err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:8px;
+  color:#f87171;font-size:12px;padding:10px 14px;margin-bottom:14px;display:none;}
+.fl{font-size:11px;font-weight:600;color:var(--tx2);display:block;margin-bottom:5px;letter-spacing:.3px;}
+.fi{width:100%;background:var(--bg);border:1.5px solid var(--bd);border-radius:var(--r);
+  padding:11px 14px;color:var(--tx);font-size:14px;margin-bottom:14px;outline:none;transition:.2s;}
+.fi:focus{border-color:var(--blue-l);}
+.fi::placeholder{color:var(--tx3);}
+.cpick{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
+.cdot{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2.5px solid transparent;transition:.15s;}
+.cdot.on{border-color:#fff;transform:scale(1.25);}
+.btn-m{width:100%;padding:13px;background:var(--grad);border:none;border-radius:var(--r);
+  color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:.15s;letter-spacing:.2px;}
+.btn-m:hover{opacity:.87;transform:translateY(-1px);}
+.ok-msg{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);border-radius:8px;
+  color:#34d399;font-size:12px;padding:10px 14px;margin-bottom:14px;display:none;}
+
+/* ── APP ── */
+#app{display:none;height:100vh;}
+#app.on{display:grid;grid-template-columns:60px 265px 1fr;}
+
+/* RAIL */
+.rail{background:var(--p1);border-right:1px solid var(--bd);
+  display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:3px;}
+.r-logo{font-size:17px;font-weight:800;letter-spacing:-1.5px;margin-bottom:16px;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.rb{width:38px;height:38px;border-radius:10px;border:none;background:transparent;
+  color:var(--tx3);font-size:16px;cursor:pointer;display:flex;align-items:center;
+  justify-content:center;transition:.18s;position:relative;}
+.rb:hover{background:var(--p2);color:var(--blue-l);}
+.rb.on{background:var(--p3);color:var(--blue-l);}
+.rbadge{position:absolute;top:3px;right:3px;min-width:15px;height:15px;border-radius:8px;
+  background:var(--red);color:#fff;font-size:9px;font-weight:700;
+  align-items:center;justify-content:center;padding:0 3px;display:none;}
+.rbadge.on{display:flex;}
+.rg{flex:1;}
+.rav{width:38px;height:38px;border-radius:50%;cursor:pointer;border:2px solid var(--bd);
+  transition:.2s;position:relative;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:13px;}
+.rav:hover{border-color:var(--blue-l);}
+.rav img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.rav-menu{position:absolute;left:48px;bottom:0;background:var(--p2);border:1px solid var(--bd);
+  border-radius:10px;padding:6px;min-width:150px;display:none;z-index:50;
+  box-shadow:0 8px 24px rgba(0,0,0,.5);}
+.rav:hover .rav-menu{display:block;}
+.rav-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;
+  font-size:12px;color:var(--tx2);cursor:pointer;transition:.12s;white-space:nowrap;}
+.rav-item:hover{background:var(--p3);color:var(--tx);}
+
+/* SIDEBAR */
+.sbar{background:var(--p1);border-right:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden;}
+.sbar-top{padding:14px 12px 8px;flex-shrink:0;}
+.sbar-title{font-size:15px;font-weight:700;margin-bottom:10px;}
+.ssrch{background:var(--bg);border:1.5px solid var(--bd);border-radius:var(--r);
+  display:flex;align-items:center;padding:7px 11px;gap:7px;}
+.ssrch input{background:transparent;border:none;color:var(--tx);font-size:13px;outline:none;flex:1;}
+.ssrch input::placeholder{color:var(--tx3);}
+.ssec{padding:10px 12px 3px;font-size:10px;color:var(--tx3);font-weight:700;letter-spacing:.8px;}
+.gpin{margin:0 8px 3px;padding:9px 11px;border-radius:11px;cursor:pointer;
+  background:linear-gradient(135deg,rgba(29,78,216,.28),rgba(14,165,233,.12));
+  border:1px solid rgba(59,130,246,.18);transition:.15s;display:flex;align-items:center;gap:9px;}
+.gpin:hover,.gpin.on{background:linear-gradient(135deg,rgba(29,78,216,.42),rgba(14,165,233,.22));
+  border-color:rgba(59,130,246,.35);}
+.gp-av{width:36px;height:36px;border-radius:9px;background:var(--grad);
+  display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.gp-n{font-size:13px;font-weight:600;}
+.gp-p{font-size:11px;color:var(--tx2);margin-top:1px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:158px;}
+.clist{flex:1;overflow-y:auto;padding:3px 7px 8px;}
+.conv{display:flex;align-items:center;gap:9px;padding:8px 9px;border-radius:10px;cursor:pointer;transition:.14s;}
+.conv:hover{background:var(--p2);}
+.conv.on{background:var(--p3);}
+.cav{width:38px;height:38px;border-radius:50%;flex-shrink:0;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;position:relative;}
+.cav img{width:100%;height:100%;object-fit:cover;}
+.cdot2{position:absolute;bottom:1px;right:1px;width:9px;height:9px;
+  border-radius:50%;background:var(--green);border:2px solid var(--p1);}
+.cinfo{flex:1;min-width:0;}
+.cn{font-size:13px;font-weight:600;}
+.cp{font-size:11px;color:var(--tx2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+.ct{font-size:10px;color:var(--tx3);flex-shrink:0;}
+
+/* ── CHAT ── */
+.chat-v{display:flex;flex-direction:column;background:var(--bg);overflow:hidden;}
+.ch-head{padding:12px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;
+  gap:11px;background:var(--p1);flex-shrink:0;}
+.ch-av{width:34px;height:34px;border-radius:50%;overflow:hidden;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;}
+.ch-av img{width:100%;height:100%;object-fit:cover;}
+.ch-info h3{font-size:14px;font-weight:600;}
+.ch-info p{font-size:11px;color:var(--tx2);margin-top:1px;}
+.ch-acts{margin-left:auto;display:flex;gap:5px;}
+.ib{width:30px;height:30px;border-radius:8px;border:none;background:var(--p2);
+  color:var(--tx2);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:13px;transition:.14s;}
+.ib:hover{background:var(--p3);color:var(--tx);}
+
+/* MESSAGES */
+.msgs{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:0;}
+.dsep{text-align:center;margin:12px 0;}
+.dsep span{font-size:10px;color:var(--tx3);background:var(--p2);padding:3px 12px;border-radius:20px;}
+.mgrp{display:flex;flex-direction:column;gap:2px;margin-bottom:10px;}
+.mgrp.me{align-items:flex-end;}
+.mname{font-size:10px;color:var(--tx3);margin-bottom:3px;padding:0 12px;}
+.rq{font-size:11px;color:var(--tx2);background:rgba(255,255,255,.05);
+  border-left:3px solid var(--blue-l);padding:4px 10px;border-radius:6px;
+  margin-bottom:3px;max-width:55%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mgrp.me .rq{align-self:flex-end;border-left:none;border-right:3px solid var(--blue-l);}
+.bbl{max-width:55%;padding:9px 13px;font-size:14px;line-height:1.55;word-break:break-word;
+  position:relative;background:var(--p2);color:var(--tx);border-radius:18px 18px 18px 4px;}
+.mgrp.me .bbl{background:var(--blue);border-radius:18px 18px 4px 18px;}
+.bacts{position:absolute;top:-26px;right:8px;background:var(--p2);border:1px solid var(--bd);
+  border-radius:20px;padding:3px 8px;gap:3px;align-items:center;display:none;z-index:5;white-space:nowrap;}
+.mgrp.me .bacts{right:auto;left:8px;}
+.bbl:hover .bacts{display:flex;}
+.ba{background:none;border:none;cursor:pointer;font-size:12px;padding:2px 5px;
+  color:var(--tx2);border-radius:5px;transition:.1s;}
+.ba:hover{background:var(--p3);color:var(--tx);}
+.ep{position:absolute;top:-56px;right:0;z-index:20;background:var(--p2);
+  border:1px solid var(--bd);border-radius:14px;padding:8px;width:200px;
+  display:none;flex-wrap:wrap;gap:2px;box-shadow:0 10px 30px rgba(0,0,0,.6);}
+.mgrp.me .ep{right:auto;left:0;}
+.ep.on{display:flex;}
+.epe{font-size:18px;padding:3px 4px;cursor:pointer;border-radius:6px;transition:.1s;}
+.epe:hover{background:var(--p3);}
+.reacts{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px;}
+.rc{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;padding:2px 8px;font-size:12px;cursor:pointer;transition:.12s;}
+.rc:hover{background:rgba(255,255,255,.12);}
+.mtime{font-size:10px;color:var(--tx3);padding:2px 12px;}
+
+/* REPLY BAR */
+.rbar{background:var(--p2);border-top:1px solid var(--bd);padding:7px 15px;
+  display:none;align-items:center;gap:9px;flex-shrink:0;}
+.rbar.on{display:flex;}
+.rbt{flex:1;font-size:12px;color:var(--tx2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rbx{background:none;border:none;color:var(--tx3);cursor:pointer;font-size:15px;}
+
+/* EMOJI PICKER PANEL */
+.emoji-panel{
+  position:absolute;bottom:calc(100% + 6px);left:15px;z-index:50;
+  background:var(--p2);border:1px solid var(--bd);border-radius:16px;
+  padding:12px;width:280px;box-shadow:0 12px 40px rgba(0,0,0,.6);
+  display:none;
+}
+.emoji-panel.on{display:block;}
+.ep-cats{display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap;}
+.ep-cat{background:none;border:none;font-size:16px;cursor:pointer;padding:4px 6px;
+  border-radius:7px;transition:.1s;opacity:.5;}
+.ep-cat:hover,.ep-cat.on{background:var(--p3);opacity:1;}
+.ep-grid{display:flex;flex-wrap:wrap;gap:2px;max-height:160px;overflow-y:auto;}
+.ep-em{font-size:20px;cursor:pointer;padding:4px 5px;border-radius:7px;
+  transition:.1s;line-height:1;}
+.ep-em:hover{background:var(--p3);}
+
+/* INPUT */
+.inp-wrap{padding:11px 15px;border-top:1px solid var(--bd);background:var(--p1);
+  flex-shrink:0;position:relative;}
+.inp-row{display:flex;align-items:flex-end;gap:7px;}
+.inp-icons{display:flex;gap:4px;flex-shrink:0;}
+.inp-ico{width:34px;height:34px;border-radius:9px;border:none;background:var(--p2);
+  color:var(--tx2);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:15px;transition:.14s;flex-shrink:0;}
+.inp-ico:hover{background:var(--p3);color:var(--tx);}
+.inp-ico.on{background:var(--p3);color:var(--blue-xl);}
+textarea.ti{flex:1;background:var(--p2);border:1.5px solid var(--bd);border-radius:12px;
+  padding:9px 13px;color:var(--tx);font-size:14px;outline:none;resize:none;
+  min-height:38px;max-height:120px;line-height:1.5;transition:.2s;}
+textarea.ti:focus{border-color:var(--blue-l);}
+textarea.ti::placeholder{color:var(--tx3);}
+.send-b{width:38px;height:38px;border-radius:10px;border:none;background:var(--grad);
+  color:#fff;cursor:pointer;font-size:15px;display:flex;align-items:center;
+  justify-content:center;flex-shrink:0;transition:.14s;}
+.send-b:hover{opacity:.85;}
+
+/* EMPTY */
+.empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;}
+.eico{font-size:56px;opacity:.1;}
+.empty h3{font-size:15px;font-weight:600;color:var(--tx2);}
+.empty p{font-size:13px;color:var(--tx3);text-align:center;max-width:220px;line-height:1.6;}
+
+/* ADMIN */
+.adm{display:none;flex-direction:column;overflow:hidden;}
+.adm.on{display:flex;}
+.adm-h{padding:16px 20px;border-bottom:1px solid var(--bd);font-size:15px;font-weight:700;flex-shrink:0;}
+.adm-b{flex:1;overflow-y:auto;padding:18px 20px;}
+.atbl{width:100%;border-collapse:collapse;}
+.atbl th{text-align:left;font-size:10px;color:var(--tx3);padding:7px 11px;
+  border-bottom:1px solid var(--bd);font-weight:700;letter-spacing:.5px;}
+.atbl td{padding:10px 11px;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;vertical-align:middle;}
+.atbl tr:hover td{background:var(--p2);}
+.tag{display:inline-flex;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;}
+.tag.a{background:rgba(37,99,235,.2);color:#93c5fd;}
+.tag.u{background:rgba(255,255,255,.06);color:var(--tx3);}
+.tag.ok{background:rgba(16,185,129,.15);color:#10b981;}
+.tag.no{background:rgba(239,68,68,.15);color:#ef4444;}
+.tb-b{padding:4px 10px;border:none;border-radius:6px;font-size:11px;cursor:pointer;transition:.12s;}
+
+/* MODAL */
+.ov{position:fixed;inset:0;background:rgba(20,30,42,.58);display:none;
+  align-items:center;justify-content:center;z-index:300;}
+.ov.on{display:flex;}
+.modal{background:var(--p1);border:1px solid var(--bd);border-radius:20px;padding:24px;
+  width:410px;max-height:82vh;display:flex;flex-direction:column;
+  box-shadow:0 24px 70px rgba(0,0,0,.55);}
+.modal h3{font-size:15px;font-weight:700;margin-bottom:14px;flex-shrink:0;}
+.msrch{background:var(--bg);border:1.5px solid var(--bd);border-radius:var(--r);
+  display:flex;align-items:center;padding:7px 11px;gap:7px;margin-bottom:10px;flex-shrink:0;}
+.msrch input{background:transparent;border:none;color:var(--tx);font-size:13px;outline:none;flex:1;}
+.msrch input::placeholder{color:var(--tx3);}
+.mlist{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:3px;}
+.mi{display:flex;align-items:center;gap:10px;padding:9px;border-radius:9px;transition:.14s;}
+.mi.cp{cursor:pointer;}
+.mi.cp:hover{background:var(--p2);}
+.miav{width:36px;height:36px;border-radius:50%;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;}
+.miav img{width:100%;height:100%;object-fit:cover;}
+.min{font-size:13px;font-weight:600;}
+.mis{font-size:11px;color:var(--tx3);}
+.mfoot{display:flex;justify-content:flex-end;margin-top:14px;flex-shrink:0;}
+.btn-sec{padding:8px 16px;border:1px solid var(--bd);border-radius:var(--r);
+  background:transparent;color:var(--tx2);font-size:13px;cursor:pointer;}
+
+/* PROFILE MODAL */
+.prof-av-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:20px;}
+.prof-av-big{width:80px;height:80px;border-radius:50%;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:24px;
+  border:3px solid var(--bd);cursor:pointer;position:relative;}
+.prof-av-big img{width:100%;height:100%;object-fit:cover;}
+.prof-av-big:hover::after{content:'📷';position:absolute;inset:0;background:rgba(0,0,0,.5);
+  display:flex;align-items:center;justify-content:center;font-size:20px;border-radius:50%;}
+.prof-name{font-size:15px;font-weight:700;}
+.prof-uname{font-size:12px;color:var(--tx3);}
+.avatar-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px;}
+.av-opt{width:40px;height:40px;border-radius:50%;cursor:pointer;border:2.5px solid transparent;
+  transition:.15s;font-size:20px;display:flex;align-items:center;justify-content:center;
+  background:var(--p2);}
+.av-opt:hover{border-color:var(--tx2);}
+.av-opt.on{border-color:var(--blue-xl);}
+.av-opt img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.color-section{margin-bottom:16px;}
+.color-section label{font-size:11px;font-weight:600;color:var(--tx2);display:block;margin-bottom:8px;}
+.color-grid{display:flex;gap:8px;flex-wrap:wrap;}
+.cc{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2.5px solid transparent;transition:.15s;}
+.cc:hover,.cc.on{border-color:#fff;transform:scale(1.2);}
+
+
+/* ── MỚI ── */
+.rav-menu::before{content:'';position:absolute;left:-12px;top:0;bottom:0;width:12px;}
+.bbl.recalled{background:transparent!important;border:1px dashed var(--bd);color:var(--tx3);font-style:italic;font-size:13px;}
+.ba.danger{color:#f87171;}
+.ba.danger:hover{background:rgba(239,68,68,.15);color:#f87171;}
+.ptabs{display:flex;background:var(--bg);border-radius:10px;padding:3px;margin-bottom:10px;flex-shrink:0;}
+.ptab{flex:1;padding:7px 4px;font-size:12px;font-weight:500;color:var(--tx3);border:none;
+  background:transparent;border-radius:7px;cursor:pointer;transition:.15s;}
+.ptab.on{background:var(--p2);color:var(--tx);}
+.inp-lock{display:none;align-items:center;justify-content:space-between;gap:12px;background:var(--p2);
+  border:1px solid var(--bd);border-radius:12px;padding:10px 14px;font-size:13px;color:var(--tx2);}
+.lock-btn{background:var(--blue);border:none;color:#fff;padding:7px 14px;border-radius:8px;
+  font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0;}
+.prof-btns{display:flex;gap:8px;}
+.pbtn{padding:6px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--p2);
+  color:var(--tx);font-size:12px;cursor:pointer;transition:.14s;}
+.pbtn:hover{background:var(--p3);}
+#prof-ov .modal>*{flex-shrink:0;}
+
+/* TOAST */
+.toasts{position:fixed;bottom:16px;right:16px;z-index:500;display:flex;flex-direction:column;gap:6px;}
+.toast{background:var(--p2);border:1px solid var(--bd);border-radius:10px;
+  padding:10px 14px;font-size:13px;display:flex;align-items:center;gap:9px;
+  box-shadow:0 8px 28px rgba(0,0,0,.5);animation:su .25s ease;max-width:270px;}
+@keyframes su{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px;}
+
+/* Modern UI refresh */
+:root{--r:14px;--bd:#1b3150;--p1:#0b1728;--p2:#10213a;--p3:#18345a;--blue:#3978f6;}
+button{font-family:inherit} .rb svg,.ib svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.r-logo{margin-bottom:18px!important}.logo-mark{width:34px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--grad);color:#fff;-webkit-text-fill-color:#fff;font-size:24px;font-weight:800;letter-spacing:-2px;box-shadow:0 8px 22px #2563eb45}
+.rb{width:42px;height:42px;border-radius:13px}.rb:hover,.rb.on{box-shadow:inset 0 0 0 1px #3b82f640}
+.ib,.inp-ico{width:38px;height:38px;border-radius:11px;border:1px solid #ffffff08}.send-b{box-shadow:0 5px 16px #2563eb45}
+.conv,.mi,.gpin{transition:background .18s,border-color .18s,transform .18s}.conv:hover,.mi:hover{background:#172b47}.sbar-title{font-size:16px;letter-spacing:-.3px}.ssrch,.msrch{border-radius:12px;background:#081321}.fi:focus,textarea.ti:focus,.ssrch:focus-within,.msrch:focus-within{box-shadow:0 0 0 3px #3b82f61c}
+.auth-links{display:flex;justify-content:center;align-items:center;gap:10px;margin:12px 0 15px;font-size:11px;color:var(--tx3)}.auth-links button{border:0;background:none;color:#8bb9ff;cursor:pointer;font-size:11px}.auth-links button:hover{color:#fff;text-decoration:underline}
+.modal{border-radius:22px;box-shadow:0 28px 90px #0009}.btn-primary{padding:9px 15px;border:0;border-radius:10px;background:var(--grad);color:#fff;font-size:12px;font-weight:700;cursor:pointer}.recovery-modal{gap:8px}.modal-icon{width:44px;height:44px;border-radius:14px;background:#2563eb22;color:#8bb9ff;display:grid;place-items:center;font-size:24px;margin-bottom:4px}.recovery-copy{font-size:12px;color:var(--tx2);line-height:1.6;margin-bottom:6px}.recovery-note{background:#0a1525;border:1px solid var(--bd);padding:12px;border-radius:12px;margin:2px 0 8px}.recovery-note strong{font-size:12px;color:#bfdbfe}.recovery-note p,.recovery-result{font-size:12px;color:var(--tx2);line-height:1.65;margin-top:5px}.recovery-result{padding:10px;border-radius:10px;background:#10213a}
+.mi{border:1px solid transparent}.mi.cp{cursor:pointer}.mi .min{letter-spacing:-.1px}.profile-close{position:absolute;right:15px;top:14px;width:32px;height:32px;border:1px solid #ffffff1a;border-radius:10px;background:#07101eaa;color:#fff;font-size:22px;cursor:pointer;z-index:3}.public-profile-modal{position:relative;overflow:hidden;text-align:center;align-items:stretch;gap:0;padding:0 24px 22px}.public-cover{height:100px;margin:0 -24px;background:radial-gradient(circle at 20% 20%,#38bdf866,transparent 42%),linear-gradient(135deg,#1d4ed8,#172554 65%,#0e7490)}.public-avatar{width:86px;height:86px;border-radius:26px;border:5px solid var(--p1);margin:-43px auto 10px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px #0005}.public-avatar img{width:100%;height:100%;object-fit:cover}.public-name{font-size:20px;font-weight:800;letter-spacing:-.5px}.public-user{font-size:12px;color:var(--tx2);margin-top:4px}.profile-details{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:16px 0}.profile-chip{padding:7px 10px;border:1px solid var(--bd);border-radius:10px;background:#0a1627;color:var(--tx2);font-size:11px}.public-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.public-actions button{padding:10px 14px;border-radius:11px;font-weight:700;font-size:12px}.profile-trigger{cursor:pointer}.profile-trigger:hover{text-decoration:underline;text-underline-offset:3px}.mname{display:flex;align-items:center;gap:6px;width:max-content;max-width:100%;cursor:pointer}.mname:hover{filter:brightness(1.25)}
+@media(max-width:760px){#app.on{grid-template-columns:52px 190px minmax(0,1fr)}.sbar-top{padding:12px 8px}.ssec{padding-left:9px}.gpin{margin:0 5px 3px;padding:7px}.gp-p{max-width:100px}.ch-head{padding:10px}.msgs{padding:12px}.bbl{max-width:82%}.modal{width:min(94vw,410px)!important;padding:18px}.public-profile-modal{padding:0 18px 18px}.public-cover{margin:0 -18px}}
+@media(max-width:540px){#app.on{grid-template-columns:48px minmax(0,1fr)}.sbar{min-width:0}.chat-v{display:none!important}#app.on.mobile-chat .sbar{display:none}#app.on.mobile-chat{grid-template-columns:48px minmax(0,1fr)}.chat-v.mobile-show{display:flex!important}.bbl{max-width:88%}.aw{width:min(390px,92vw)}.acard{padding:22px}}
+
+
+/* Darker soft-neutral theme */
+:root{--bg:#e5e8ec;--p1:#f8f9fa;--p2:#e9edf1;--p3:#dce2e8;--p4:#cbd5df;--blue:#5277a8;--blue-l:#668bb8;--blue-xl:#8ba9cc;--cyan:#8aabbf;--grad:linear-gradient(135deg,#7894b2,#6483a5,#829fb8);--tx:#273444;--tx2:#596b7d;--tx3:#7b8998;--bd:#d3dbe3;--green:#319b78;--red:#d95d63}
+body{background:#dce1e6;color:var(--tx)}
+#auth{background:radial-gradient(ellipse at 20% 15%,#cbd3dc 0%,#dfe3e8 68%)}
+.acard{background:rgba(242,244,246,.98);border-color:#c8d0d9;box-shadow:0 24px 70px rgba(36,52,68,.18)}
+.brand h1{background:linear-gradient(135deg,#5d7897,#8299b0);-webkit-background-clip:text}
+.brand p{color:#748395}.tabs{background:#e6eaee}.tab{color:#718092}.tab.on{background:#d5dde5;color:#34475a}
+.fi{background:#edf0f3;border-color:#d1dae3;color:#273444}.fi::placeholder{color:#8492a1}.fi:focus{border-color:#829bb5}
+.auth-links button{color:#496b8d}.btn-m{background:linear-gradient(135deg,#718eae,#607f9f);color:#fff}
+.login-help{font-size:11px;line-height:1.55;color:#647487;text-align:center;margin:-3px 0 14px;padding:9px 11px;background:#e9edf1;border:1px solid #d9e0e7;border-radius:10px}
+.sbar,.rail,.ch-head{background:#fff;border-color:#e2e7ed}.chat-v{background:#f6f8fa}.ssrch,.msrch{background:#f5f7f9;border-color:#e0e6ec}.ssrch input{color:#273444}
+.gpin{background:linear-gradient(135deg,#edf2f6,#f5f7f9);border-color:#e1e7ed}.gpin:hover,.gpin.on{background:#e8eef4;border-color:#ccd8e4}.gp-av{background:linear-gradient(135deg,#9aafc4,#b9c8d5)}
+.conv:hover,.mi:hover{background:#f0f3f6}.conv.on{background:#e6edf3}.rb:hover,.rb.on{background:#edf2f6;color:#587b9d}.ib{background:#f0f3f6;border-color:#e3e8ee;color:#687b8f}.ib:hover{background:#e3eaf0;color:#3b536b}
+.bbl{background:#e9eef3;color:#273444}.mgrp.me .bbl{background:#dce8f2;color:#273444}.dsep span,.recovery-result{background:#edf1f5;color:#657587}.modal{background:#fff;color:#273444;border:1px solid #e3e8ee}.recovery-note{background:#e9edf1;border-color:#d5dde5}.recovery-note strong{color:#344b62}.modal-icon{background:#dfe6ed;color:#526f8c}.public-cover{background:radial-gradient(circle at 20% 20%,#ffffffaa,transparent 42%),linear-gradient(135deg,#a8bacb,#d8e2ea 65%,#9fb6c8)}.profile-chip{background:#f4f6f8;color:#657587;border-color:#e0e6ec}.profile-close{background:#ffffffdd;color:#45596d;border-color:#e0e6ec}
+.rav-menu,.emoji-panel,.ep,.toast{background:#fff;border-color:#e0e6ec;color:#273444;box-shadow:0 10px 30px rgba(36,52,68,.12)}
+@media(max-width:540px){#auth{overflow-y:auto;padding:18px 0}.aw{margin:auto}}
+
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth">
+<div class="aw">
+  <div class="brand"><h1>Mello</h1><p>WORK COMMUNICATION</p></div>
+  <div class="acard">
+    <div class="tabs">
+      <button class="tab on" onclick="swTab('li')">Đăng nhập</button>
+      <button class="tab" onclick="swTab('rg')">Đăng ký</button>
+    </div>
+    <div id="err" class="err"></div>
+    <div id="ok" class="ok-msg"></div>
+
+    <!-- LOGIN -->
+    <div id="li-f">
+      <label class="fl">Tên đăng nhập</label>
+      <input class="fi" id="li-u" placeholder="username" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()">
+      <label class="fl">Mật khẩu</label>
+      <input class="fi" type="password" id="li-p" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+      <div class="auth-links"><button type="button" onclick="openForgot()">Quên mật khẩu?</button></div>
+      <div class="login-help">Bạn có thể khôi phục qua email đã đăng ký. Nếu không còn truy cập email, vui lòng liên hệ quản trị viên.</div>
+      <button class="btn-m" onclick="doLogin()">Đăng nhập</button>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="rg-f" style="display:none">
+      <label class="fl">Họ và tên</label>
+      <input class="fi" id="rg-n" placeholder="Nguyễn Văn A">
+      <label class="fl">Tên đăng nhập</label>
+      <input class="fi" id="rg-u" placeholder="username (chữ thường, không dấu)" autocomplete="off">
+      <label class="fl">Bộ phận</label>
+      <input class="fi" id="rg-dept" placeholder="Ví dụ: Kho vận, Kế toán, Nhân sự">
+      <label class="fl">Email khôi phục</label>
+      <input class="fi" id="rg-email" type="email" inputmode="email" placeholder="ten@email.com" autocomplete="email">
+      <label class="fl">Mật khẩu</label>
+      <input class="fi" type="password" id="rg-p" placeholder="Tối thiểu 6 ký tự">
+      <label class="fl">Nhập lại mật khẩu</label>
+      <input class="fi" type="password" id="rg-p2" placeholder="Nhập lại mật khẩu" onkeydown="if(event.key==='Enter')doReg()">
+      <label class="fl">Màu đại diện</label>
+      <div class="cpick" id="cpick"></div>
+      <button class="btn-m" onclick="doReg()">Tạo tài khoản</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- RAIL -->
+  <div class="rail">
+    <div class="r-logo" title="Mello"><span class="logo-mark">m</span></div>
+    <button class="rb on" id="rb-chat" onclick="setView('chat')" title="Tin nhắn">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l1.7-3.4A7.5 7.5 0 1 1 20 11.5Z"/></svg><span class="rbadge" id="nb"></span>
+    </button>
+    <button class="rb" id="rb-ppl" onclick="openPpl()" title="Thành viên &amp; kết bạn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M10 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="rbadge" id="fb"></span></button>
+    <button class="rb" id="adm-btn" onclick="setView('admin')" title="Quản trị" style="display:none">⚙️</button>
+    <div class="rg"></div>
+    <div class="rav" id="rav" onclick="openProfile()">
+      <div class="rav-menu" onclick="event.stopPropagation()">
+        <div class="rav-item" onclick="openProfile();document.getElementById('av-file').click()">📷 Đổi ảnh đại diện</div>
+        <div class="rav-item" onclick="openProfile()">✏️ Chỉnh sửa hồ sơ</div>
+        <div class="rav-item" onclick="doLogout()" style="color:#f87171">🚪 Đăng xuất</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sbar">
+    <div class="sbar-top">
+      <div class="sbar-title">Tin nhắn</div>
+      <div class="ssrch">
+        <span style="color:var(--tx3);font-size:13px">🔍</span>
+        <input type="text" placeholder="Tìm kiếm..." id="srch" oninput="renderConvList()">
+      </div>
+    </div>
+    <div class="ssec">NHÓM</div>
+    <div class="gpin" id="gpin" onclick="openGroup()">
+      <div class="gp-av">💬</div>
+      <div style="flex:1;min-width:0">
+        <div class="gp-n">Mello — Nhóm chung</div>
+        <div class="gp-p" id="gp-p">Tất cả thành viên</div>
+      </div>
+    </div>
+    <div class="ssec">TIN NHẮN RIÊNG</div>
+    <div class="clist" id="clist"></div>
+  </div>
+
+  <!-- CHAT VIEW -->
+  <div class="chat-v" id="chat-v">
+    <div class="empty" id="empty">
+      <div class="eico">💬</div>
+      <h3>Chào mừng đến Mello</h3>
+      <p>Chọn nhóm chung hoặc nhắn tin với đồng nghiệp</p>
+    </div>
+    <div id="active-chat" style="display:none;flex-direction:column;height:100%">
+      <div class="ch-head">
+        <div class="ch-av" id="ch-av"></div>
+        <div class="ch-info"><h3 id="ch-name"></h3><p id="ch-sub"></p></div>
+        <div class="ch-acts">
+          <button class="ib" onclick="openPpl()" title="Thành viên"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M10 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></button>
+          <button class="ib" id="search-msg-btn" title="Tìm trong chat" onclick="toggleMsgSearch()"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg></button>
+        </div>
+      </div>
+      <!-- MSG SEARCH -->
+      <div id="msg-search-bar" style="display:none;padding:8px 18px;border-bottom:1px solid var(--bd);background:var(--p1)">
+        <input id="msg-q" placeholder="Tìm tin nhắn..." style="width:100%;background:var(--p2);border:1.5px solid var(--bd);
+          border-radius:9px;padding:8px 12px;color:var(--tx);font-size:13px;outline:none;"
+          oninput="searchMsgs()" onkeydown="if(event.key==='Escape')toggleMsgSearch()">
+      </div>
+      <div class="msgs" id="msgs"></div>
+      <div class="rbar" id="rbar">
+        <span style="font-size:12px;color:var(--blue-xl)">↩ Trả lời</span>
+        <span class="rbt" id="rbt"></span>
+        <button class="rbx" onclick="clearReply()">✕</button>
+      </div>
+
+      <div class="inp-wrap">
+        <!-- EMOJI PANEL -->
+        <div class="emoji-panel" id="emoji-panel">
+          <div class="ep-cats" id="ep-cats"></div>
+          <div class="ep-grid" id="ep-grid"></div>
+        </div>
+        <div class="inp-lock" id="inp-lock">
+          <span id="lock-txt"></span>
+          <button class="lock-btn" id="lock-btn" onclick="lockAction()">Kết bạn</button>
+        </div>
+        <div class="inp-row" id="inp-row">
+          <button class="inp-ico" id="emoji-btn" onclick="toggleEmojiPanel()" title="Emoji">😊</button>
+          <textarea class="ti" id="ti" placeholder="Nhập tin nhắn…" rows="1"
+            onkeydown="onKey(event)" oninput="autoH(this)"></textarea>
+          <button class="send-b" onclick="send()" title="Gửi">➤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN VIEW -->
+  <div class="adm" id="adm-v">
+    <div class="adm-h">⚙️ Quản trị — Mello</div>
+    <div class="adm-b">
+      <table class="atbl">
+        <thead><tr>
+          <th>Thành viên</th><th>Username</th><th>Trạng thái</th><th>Quyền</th><th>Hành động</th>
+        </tr></thead>
+        <tbody id="atbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- PEOPLE MODAL -->
+<div class="ov" id="ppl-ov">
+<div class="modal">
+  <h3>👥 Tất cả thành viên (<span id="ppl-count">0</span>)</h3>
+  <div class="ptabs">
+    <button class="ptab on" data-t="all" onclick="setPplTab('all')">Mọi người</button>
+    <button class="ptab" data-t="req" onclick="setPplTab('req')">Lời mời <span id="req-cnt"></span></button>
+    <button class="ptab" data-t="fr" onclick="setPplTab('fr')">Bạn bè</button>
+  </div>
+  <div class="msrch">
+    <span style="color:var(--tx3)">🔍</span>
+    <input type="text" id="ppl-q" placeholder="Tìm kiếm..." oninput="filterPpl()">
+  </div>
+  <div class="mlist" id="ppl-list"></div>
+  <div class="mfoot"><button class="btn-sec" onclick="closeOv('ppl-ov')">Đóng</button></div>
+</div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="ov" id="prof-ov">
+<div class="modal" style="width:420px;overflow-y:auto">
+  <h3>✏️ Chỉnh sửa hồ sơ</h3>
+  <div class="prof-av-wrap">
+    <div class="prof-av-big" id="prof-av-big" onclick="document.getElementById('av-file').click()" title="Tải ảnh lên"></div>
+    <div style="text-align:center">
+      <div class="prof-name" id="prof-name-display"></div>
+      <div class="prof-uname" id="prof-uname-display"></div>
+    </div>
+    <div class="prof-btns">
+      <button class="pbtn" onclick="document.getElementById('av-file').click()">📷 Tải ảnh lên</button>
+      <button class="pbtn" id="av-remove" onclick="removeAvImg()" style="display:none">Gỡ ảnh</button>
+    </div>
+    <input type="file" id="av-file" accept="image/png,image/jpeg,image/webp,image/gif" hidden onchange="onAvFile(this)">
+  </div>
+  <div id="prof-av-section">
+    <label class="fl">Hoặc chọn biểu tượng</label>
+    <div class="avatar-grid" id="avatar-grid"></div>
+  </div>
+  <div class="color-section">
+    <label>Màu nền đại diện</label>
+    <div class="color-grid" id="color-grid"></div>
+  </div>
+  <label class="fl">Họ và tên</label>
+  <input class="fi" id="prof-name-inp" placeholder="Họ và tên" oninput="refreshBigAv()">
+  <div class="mfoot" style="gap:10px">
+    <button class="btn-sec" onclick="closeOv('prof-ov')">Hủy</button>
+    <button style="padding:8px 20px;background:var(--grad);border:none;border-radius:var(--r);
+      color:#fff;font-size:13px;font-weight:600;cursor:pointer" onclick="saveProfile()">Lưu thay đổi</button>
+  </div>
+</div>
+</div>
+
+<!-- EMAIL PASSWORD RECOVERY -->
+<div class="ov" id="forgot-ov" onclick="if(event.target===this)closeOv('forgot-ov')"><div class="modal recovery-modal">
+  <div class="modal-icon">↻</div><h3>Khôi phục mật khẩu</h3>
+  <p class="recovery-copy">Nhập email đã đăng ký. Nếu email khớp với tài khoản, hệ thống sẽ gửi liên kết bảo mật để đặt lại mật khẩu.</p>
+  <div class="recovery-note"><strong>Không nhận được email?</strong><p>Kiểm tra thư mục Spam/Thư rác. Nếu email không còn truy cập được hoặc tài khoản chưa có email khôi phục, vui lòng liên hệ quản trị viên.</p></div>
+  <div id="recovery-step1">
+    <label class="fl" for="forgot-email">Email khôi phục</label><input class="fi" id="forgot-email" type="email" inputmode="email" autocomplete="email" placeholder="Email đã đăng ký">
+    <button class="btn-m" id="send-otp-btn" onclick="requestRecoveryEmail()">Gửi liên kết khôi phục</button>
+  </div>
+  <div id="recovery-step2" style="display:none">
+    <p class="recovery-copy">Nếu email đã được đăng ký và hệ thống gửi thư thành công, hãy mở hộp thư và làm theo liên kết đặt lại mật khẩu.</p>
+  </div>
+  <div id="recovery-status" class="recovery-result" role="status" aria-live="polite" style="display:none"></div>
+  <div class="mfoot" style="gap:8px;margin-top:8px"><button class="btn-sec" onclick="closeOv('forgot-ov')">Đóng</button><button class="btn-sec" id="recovery-back" style="display:none" onclick="recoveryBack()">Quay lại</button></div>
+</div></div>
+<!-- PUBLIC PROFILE -->
+<div class="ov" id="public-prof-ov"><div class="modal public-profile-modal">
+  <button class="profile-close" onclick="closeOv('public-prof-ov')" aria-label="Đóng">×</button>
+  <div class="public-cover"></div><div class="public-avatar" id="pub-av"></div>
+  <div class="public-name" id="pub-name"></div><div class="public-user" id="pub-user"></div>
+  <div class="profile-details" id="pub-details"></div>
+  <div class="public-actions" id="pub-actions"></div>
+</div></div>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+const SB_URL='https://pgxknfzrnlnzeunscfix.supabase.co';
+const SB_KEY='sb_publishable_fLrROyxKpGPySMo584FDdg_FcS-AuKB';
+const GRP='00000000-0000-0000-0000-000000000001';
+const COLORS=['#2563eb','#0ea5e9','#7c3aed','#059669','#f59e0b','#ef4444','#06b6d4','#ec4899','#84cc16','#f97316'];
+
+// Avatar emoji options
+const AVATARS=['🐱','🐶','🦊','🐼','🐨','🦁','🐯','🦄','🐸','🐙',
+  '🦋','🌟','⚡','🔥','💎','🎯','🚀','🌈','🎨','🎸'];
+
+const sb=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false}});
+let ME=null,activeRoom=null,replyTo=null,allP=[],rtChan=null;
+let selAvatar=null,selColor=null,profSelColor=null;
+let allMsgs=[];
+
+// EMOJI DATA
+const EMOJIS={
+  '😊':['😀','😃','😄','😁','😆','😅','🤣','😂','🙂','😊','😇','🥰','😍','🤩','😘','😗','😙','😚','😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔','🤐','🤨','😐','😑','😶','😏','😒','🙄','😬','🤥','😌','😔','😪','🤤','😴','😷','🤒','🤕'],
+  '👍':['👍','👎','👌','✌️','🤞','🤟','🤙','👈','👉','👆','👇','☝️','✋','🤚','🖐️','🖖','👋','🤜','🤛','👏','🙌','🤲','🤝','🙏','💪','🦾','✍️'],
+  '❤️':['❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💕','💞','💓','💗','💖','💘','💝','💟','♥️','💔'],
+  '🎉':['🎉','🎊','🎈','🎁','🎀','🎗️','🎟️','🎫','🏆','🥇','🥈','🥉','🎖️','🏅','🎗️'],
+  '🔥':['🔥','⚡','💫','✨','🌟','⭐','🌈','☀️','🌤️','⛅','🌩️','❄️','🌊','💧','🌙'],
+  '😢':['😢','😭','😤','😠','😡','🤬','😖','😣','😞','😓','😩','😫','🥺','😿','💀','☠️'],
+};
+const EP_ICONS={'😊':'😊','👍':'👍','❤️':'❤️','🎉':'🎉','🔥':'🔥','😢':'😢'};
+
+// ── HELPERS ──
+const ini=n=>(n||'?').trim().split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,2);
+const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+const ftm=ts=>{const d=new Date(ts),n=new Date();
+  return d.toDateString()===n.toDateString()
+    ?d.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'})
+    :d.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit'});};
+const gP=id=>allP.find(p=>p.id===id)||{full_name:'?',color:'#2563eb',username:'?',avatar_emoji:null};
+const setErr=m=>{const e=document.getElementById('err');e.textContent=m;e.style.display=m?'block':'none';};
+const setOk=m=>{const e=document.getElementById('ok');e.textContent=m;e.style.display=m?'block':'none';};
+
+function toast(msg,ico='✅'){
+  const el=document.createElement('div');el.className='toast';
+  el.innerHTML=`<span style="font-size:15px">${ico}</span><span>${esc(msg)}</span>`;
+  document.getElementById('toasts').appendChild(el);setTimeout(()=>el.remove(),4000);
+}
+
+// ── COLOR PICKER (auth) ──
+(()=>{
+  const row=document.getElementById('cpick');
+  COLORS.forEach((c,i)=>{
+    const d=document.createElement('div');d.className='cdot'+(i===0?' on':'');
+    d.style.background=c;d.dataset.c=c;
+    d.onclick=()=>{document.querySelectorAll('.cdot').forEach(x=>x.classList.remove('on'));d.classList.add('on');};
+    row.appendChild(d);
+  });
+})();
+const selC=()=>document.querySelector('.cdot.on')?.dataset.c||COLORS[0];
+
+// ── EMOJI PANEL ──
+(()=>{
+  const cats=document.getElementById('ep-cats');
+  Object.entries(EP_ICONS).forEach(([k,ico])=>{
+    const b=document.createElement('button');b.className='ep-cat';b.textContent=ico;b.dataset.cat=k;
+    b.onclick=()=>{
+      document.querySelectorAll('.ep-cat').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+      loadEmojiCat(k);
+    };
+    cats.appendChild(b);
+  });
+  // Default
+  if(cats.children[0]){cats.children[0].classList.add('on');loadEmojiCat('😊');}
+})();
+
+function loadEmojiCat(cat){
+  const grid=document.getElementById('ep-grid');grid.innerHTML='';
+  (EMOJIS[cat]||[]).forEach(e=>{
+    const sp=document.createElement('span');sp.className='ep-em';sp.textContent=e;
+    sp.onclick=()=>insertEmoji(e);grid.appendChild(sp);
+  });
+}
+function toggleEmojiPanel(){
+  const p=document.getElementById('emoji-panel');
+  p.classList.toggle('on');
+  document.getElementById('emoji-btn').classList.toggle('on',p.classList.contains('on'));
+}
+function insertEmoji(e){
+  const ti=document.getElementById('ti');
+  const s=ti.selectionStart,en=ti.selectionEnd;
+  ti.value=ti.value.slice(0,s)+e+ti.value.slice(en);
+  ti.selectionStart=ti.selectionEnd=s+e.length;
+  ti.focus();autoH(ti);
+}
+// ── MSG SEARCH ──
+function toggleMsgSearch(){
+  const bar=document.getElementById('msg-search-bar');
+  const vis=bar.style.display==='none';
+  bar.style.display=vis?'':'none';
+  if(vis)document.getElementById('msg-q').focus();
+  else{document.getElementById('msg-q').value='';renderMsgs(allMsgs);}
+}
+function searchMsgs(){
+  const q=document.getElementById('msg-q').value.toLowerCase();
+  if(!q){renderMsgs(allMsgs);return;}
+  renderMsgs(allMsgs.filter(m=>!m.deleted&&(m.content||'').toLowerCase().includes(q)));
+}
+
+// ── AVATAR RENDER ──
+// Ưu tiên: ảnh tải lên > emoji > chữ cái đầu
+const IMG_OK=/^data:image\/(jpeg|png|webp);base64,/;
+function fillAv(el,p,size){
+  const menu=el.querySelector(':scope > .rav-menu');
+  el.textContent='';
+  el.style.background=p.color||'#2563eb';el.style.color='#fff';
+  if(p.avatar_url&&IMG_OK.test(p.avatar_url)){
+    const img=document.createElement('img');
+    img.src=p.avatar_url;img.alt='';img.draggable=false;
+    img.style.cssText='width:100%;height:100%;object-fit:cover;display:block;';
+    el.appendChild(img);
+  } else if(p.avatar_emoji){
+    el.style.fontSize=Math.round(size*.5)+'px';
+    el.appendChild(document.createTextNode(p.avatar_emoji));
+  } else {
+    el.style.fontSize=Math.round(size*.35)+'px';
+    el.appendChild(document.createTextNode(ini(p.full_name)));
+  }
+  if(menu)el.appendChild(menu);
+}
+function makeAvEl(p,size=38,radius='50%'){
+  const wrap=document.createElement('div');
+  wrap.style.cssText=`width:${size}px;height:${size}px;border-radius:${radius};overflow:hidden;
+    display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;`;
+  fillAv(wrap,p,size);
+  return wrap;
+}
+
+// ── AUTH ──
+function swTab(t){
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('on',(t==='li'?i===0:i===1)));
+  document.getElementById('li-f').style.display=t==='li'?'':'none';
+  document.getElementById('rg-f').style.display=t==='rg'?'':'none';
+  setErr('');setOk('');
+}
+
+async function doLogin(){
+  const u=document.getElementById('li-u').value.trim().toLowerCase();
+  const p=document.getElementById('li-p').value;
+  if(!u||!p){setErr('Vui lòng nhập đầy đủ.');return;}
+  const {data,error}=await sb.from('profiles').select('*').eq('username',u).eq('password',p).eq('is_active',true).single();
+  if(error||!data){setErr('Tên đăng nhập hoặc mật khẩu không đúng.');return;}
+  await sb.from('profiles').update({last_seen:new Date().toISOString()}).eq('id',data.id);
+  await boot(data);
+}
+
+async function doReg(){
+  const name=document.getElementById('rg-n').value.trim();
+  const u=document.getElementById('rg-u').value.trim().toLowerCase().replace(/\s+/g,'');
+  const department=document.getElementById('rg-dept').value.trim();
+  const email=document.getElementById('rg-email').value.trim().toLowerCase();
+  const p=document.getElementById('rg-p').value;
+  const p2=document.getElementById('rg-p2').value;
+  if(!name||!u||!department||!email||!p||!p2){setErr('Vui lòng điền đầy đủ thông tin, bao gồm bộ phận và email khôi phục.');return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setErr('Vui lòng nhập địa chỉ email hợp lệ.');return;}
+  if(p.length<6){setErr('Mật khẩu tối thiểu 6 ký tự.');return;}
+  if(p!==p2){setErr('Mật khẩu nhập lại không khớp.');return;}
+  if(!/^[a-z0-9_]+$/.test(u)){setErr('Username chỉ dùng a-z, 0-9, dấu _');return;}
+  const {data:ex}=await sb.from('profiles').select('id').eq('username',u).maybeSingle();
+  if(ex){setErr('Tên đăng nhập đã tồn tại.');return;}
+  const color=selC();
+  const {data:nu,error}=await sb.from('profiles')
+    .insert({username:u,full_name:name,role:'Nhân viên',department:department,recovery_email:email,password:p,color}).select().single();
+  if(error||!nu){console.error('Mello registration error:',error);setErr(error?.message?.toLowerCase().includes('column')?'Chưa thể tạo tài khoản: cần bổ sung cột department và recovery_email trong bảng profiles trên Supabase.':'Lỗi tạo tài khoản. Vui lòng kiểm tra cấu hình bảng profiles trên Supabase.');return;}
+  await sb.from('room_members').upsert({room_id:GRP,user_id:nu.id},{onConflict:'room_id,user_id'});
+  await sb.from('messages').insert({room_id:GRP,sender_id:nu.id,content:`👋 ${name} vừa tham gia Mello!`});
+  setOk('Tài khoản đã tạo! Vui lòng đăng nhập.');
+  document.getElementById('li-u').value=u;
+  swTab('li');
+}
+
+// ── STATE (mới) ──
+let friendships=[];            // các quan hệ bạn bè liên quan đến ME
+let convs=new Map();           // roomId -> {rid, other(userId), last}
+let grpLast=null;              // tin nhắn cuối của nhóm chung
+let activeOther=null;          // profile người còn lại khi đang mở DM (null khi ở nhóm)
+let pplTab='all';
+let selAvatarImg=null;         // ảnh đại diện tải lên (data URL) đang chọn trong modal
+let rtFr=null;
+let fWarned=false;
+const nonMember=new Set();     // phòng nhận từ realtime nhưng không phải của mình
+const RECALLED_TXT='Tin nhắn đã được thu hồi';
+const renderContent=t=>esc(t).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+
+// ── BOOT ──
+async function boot(user){
+  ME=user;
+  await sb.from('room_members').upsert({room_id:GRP,user_id:ME.id},{onConflict:'room_id,user_id'});
+  localStorage.setItem('mello_uid',ME.id);
+  document.getElementById('auth').style.display='none';
+  document.getElementById('app').classList.add('on');
+  renderRailAv();
+  if(ME.is_admin)document.getElementById('adm-btn').style.display='flex';
+  await loadProfiles();
+  await loadFriendships();
+  await loadConvs();
+  await loadGrpLast();
+  subscribeRT();
+  openGroup();
+}
+
+function renderRailAv(){fillAv(document.getElementById('rav'),ME,38);}
+
+async function doLogout(){
+  localStorage.removeItem('mello_uid');
+  if(rtChan)sb.removeChannel(rtChan);
+  if(rtFr)sb.removeChannel(rtFr);
+  rtChan=null;rtFr=null;
+  ME=null;activeRoom=null;activeOther=null;replyTo=null;allMsgs=[];
+  friendships=[];convs=new Map();grpLast=null;nonMember.clear();
+  document.getElementById('clist').innerHTML='';
+  document.getElementById('auth').style.display='flex';
+  document.getElementById('app').classList.remove('on');
+  document.getElementById('active-chat').style.display='none';
+  document.getElementById('empty').style.display='flex';
+  document.title='Mello';
+}
+
+// ── LOAD PROFILES ──
+async function loadProfiles(){
+  const base='id,username,full_name,role,color,is_admin,is_active,avatar_emoji';
+  let r=await sb.from('profiles').select(base+',avatar_url').eq('is_active',true);
+  if(r.error)r=await sb.from('profiles').select(base).eq('is_active',true); // chưa có cột avatar_url
+  allP=r.data||[];
+}
+
+// ── FRIENDS ──
+async function loadFriendships(){
+  const {data,error}=await sb.from('friendships').select('*')
+    .or(`requester_id.eq.${ME.id},addressee_id.eq.${ME.id}`);
+  if(error){
+    if(!fWarned){fWarned=true;toast('Chưa có bảng friendships — hãy chạy SQL cài đặt','⚠️');}
+    friendships=[];
+  } else friendships=data||[];
+  updateFriendBadge();
+}
+function relOf(uid){
+  const f=friendships.find(x=>(x.requester_id===ME.id&&x.addressee_id===uid)||(x.requester_id===uid&&x.addressee_id===ME.id));
+  if(!f)return {s:'none'};
+  if(f.status==='accepted')return {s:'friends',f};
+  return {s:f.requester_id===ME.id?'sent':'received',f};
+}
+const isFriend=uid=>relOf(uid).s==='friends';
+function updateFriendBadge(){
+  const n=friendships.filter(f=>f.status==='pending'&&f.addressee_id===ME.id).length;
+  const b=document.getElementById('fb');b.textContent=n>9?'9+':n;b.classList.toggle('on',n>0);
+  const rc=document.getElementById('req-cnt');if(rc)rc.textContent=n?`(${n})`:'';
+}
+async function afterFriendChange(){
+  await loadFriendships();refreshPplIfOpen();applyInputLock();
+}
+async function sendReq(uid){
+  const r=relOf(uid);
+  if(r.s==='received')return acceptReq(r.f.id);
+  if(r.s!=='none')return;
+  const {error}=await sb.from('friendships').insert({requester_id:ME.id,addressee_id:uid,status:'pending'});
+  if(error){toast('Không gửi được lời mời: '+(error.message||'lỗi không rõ'),'❌');return;}
+  toast('Đã gửi lời mời kết bạn','👋');
+  await afterFriendChange();
+}
+async function acceptReq(fid){
+  const {error}=await sb.from('friendships').update({status:'accepted'}).eq('id',fid).eq('addressee_id',ME.id);
+  if(error){toast('Không chấp nhận được: '+(error.message||'lỗi không rõ'),'❌');return;}
+  toast('Hai bạn đã trở thành bạn bè','🤝');
+  await afterFriendChange();
+}
+async function cancelReq(fid){
+  const {error}=await sb.from('friendships').delete().eq('id',fid).eq('requester_id',ME.id);
+  if(error){toast('Không hủy được: '+(error.message||'lỗi không rõ'),'❌');return;}
+  toast('Đã hủy lời mời','↩️');
+  await afterFriendChange();
+}
+async function declineReq(fid){
+  const {error}=await sb.from('friendships').delete().eq('id',fid).eq('addressee_id',ME.id);
+  if(error){toast('Không từ chối được: '+(error.message||'lỗi không rõ'),'❌');return;}
+  toast('Đã từ chối lời mời','✖️');
+  await afterFriendChange();
+}
+
+// Khóa ô nhập nếu đang ở DM với người chưa là bạn
+function applyInputLock(){
+  const locked=!!activeOther&&!isFriend(activeOther.id);
+  document.getElementById('inp-row').style.display=locked?'none':'';
+  const lk=document.getElementById('inp-lock');
+  lk.style.display=locked?'flex':'none';
+  if(!locked){document.getElementById('emoji-panel').classList.remove('on');return;}
+  const s=relOf(activeOther.id).s;
+  document.getElementById('lock-txt').textContent=
+    s==='sent'?'Bạn đã gửi lời mời kết bạn. Chờ đối phương chấp nhận để nhắn tin.'
+    :s==='received'?`${activeOther.full_name} đã gửi lời mời kết bạn cho bạn.`
+    :'Hai bạn chưa là bạn bè. Hãy kết bạn để nhắn tin.';
+  const b=document.getElementById('lock-btn');
+  b.style.display=s==='sent'?'none':'';
+  b.textContent=s==='received'?'Chấp nhận':'Kết bạn';
+}
+function lockAction(){
+  if(!activeOther)return;
+  const r=relOf(activeOther.id);
+  if(r.s==='received')acceptReq(r.f.id);
+  else if(r.s==='none')sendReq(activeOther.id);
+}
+
+// ── DANH SÁCH TRÒ CHUYỆN (cache, chỉ tải 1 lần) ──
+const lastText=last=>{
+  if(!last)return 'Bắt đầu trò chuyện';
+  const pre=last.sender_id===ME.id?'Bạn: ':'';
+  return last.deleted?pre+RECALLED_TXT:pre+(last.content||'').slice(0,45);
+};
+
+async function loadConvs(){
+  convs=new Map();
+  const {data:myR}=await sb.from('room_members').select('room_id').eq('user_id',ME.id);
+  const ids=(myR||[]).map(r=>r.room_id).filter(id=>id!==GRP);
+  if(ids.length){
+    const [{data:rooms},{data:mem}]=await Promise.all([
+      sb.from('rooms').select('id,type').in('id',ids),
+      sb.from('room_members').select('room_id,user_id').in('room_id',ids).neq('user_id',ME.id)
+    ]);
+    const dmIds=(rooms||[]).filter(r=>r.type==='dm').map(r=>r.id);
+    const lasts=await Promise.all(dmIds.map(rid=>
+      sb.from('messages').select('id,content,created_at,sender_id,deleted')
+        .eq('room_id',rid).order('created_at',{ascending:false}).limit(1)));
+    dmIds.forEach((rid,i)=>{
+      const om=(mem||[]).find(m=>m.room_id===rid);
+      if(!om)return;
+      convs.set(rid,{rid,other:om.user_id,last:(lasts[i].data&&lasts[i].data[0])||null});
+    });
+  }
+  renderConvList();
+}
+
+async function adoptRoom(rid){
+  const {data:mine}=await sb.from('room_members').select('room_id').eq('room_id',rid).eq('user_id',ME.id).maybeSingle();
+  if(!mine)return null;
+  const {data:rm}=await sb.from('rooms').select('type').eq('id',rid).maybeSingle();
+  if(!rm||rm.type!=='dm')return null;
+  const {data:om}=await sb.from('room_members').select('user_id').eq('room_id',rid).neq('user_id',ME.id).limit(1);
+  if(!om||!om[0])return null;
+  const c={rid,other:om[0].user_id,last:null};
+  convs.set(rid,c);
+  return c;
+}
+
+function buildConv(c,other){
+  const el=document.createElement('div');
+  el.className='conv'+(activeRoom===c.rid?' on':'');
+  el.dataset.rid=c.rid;
+  el.onclick=()=>openDMRoom(c.rid,gP(c.other));
+  const avatar=makeAvEl(other,38,'50%');avatar.classList.add('profile-trigger');avatar.title='Xem hồ sơ';
+  avatar.onclick=(ev)=>{ev.stopPropagation();showPublicProfile(other.id);};el.appendChild(avatar);
+  const info=document.createElement('div');info.className='cinfo';
+  const cn=document.createElement('div');cn.className='cn profile-trigger';cn.textContent=other.full_name;cn.title='Xem hồ sơ';
+  cn.onclick=(ev)=>{ev.stopPropagation();showPublicProfile(other.id);};
+  const cp=document.createElement('div');cp.className='cp';cp.textContent=lastText(c.last);
+  info.append(cn,cp);
+  const ct=document.createElement('div');ct.className='ct';ct.textContent=c.last?ftm(c.last.created_at):'';
+  el.append(info,ct);
+  return el;
+}
+
+// Dựng lại từ cache (không gọi mạng)
+function renderConvList(){
+  const q=(document.getElementById('srch').value||'').trim().toLowerCase();
+  const clist=document.getElementById('clist');clist.innerHTML='';
+  const arr=[...convs.values()].sort((a,b)=>
+    (b.last?+new Date(b.last.created_at):0)-(a.last?+new Date(a.last.created_at):0));
+  arr.forEach(c=>{
+    const other=allP.find(p=>p.id===c.other);if(!other)return;
+    if(q&&!other.full_name.toLowerCase().includes(q)&&!other.username.toLowerCase().includes(q))return;
+    clist.appendChild(buildConv(c,other));
+  });
+}
+
+// Chỉ cập nhật đúng 1 dòng + đưa lên đầu, không dựng lại cả danh sách
+function touchConv(rid,last){
+  const c=convs.get(rid);if(!c)return;
+  c.last=last;
+  const el=document.querySelector(`#clist [data-rid="${rid}"]`);
+  if(!el){renderConvList();return;}
+  el.querySelector('.cp').textContent=lastText(last);
+  el.querySelector('.ct').textContent=last?ftm(last.created_at):'';
+  const cl=document.getElementById('clist');
+  if(cl.firstChild!==el)cl.prepend(el);
+}
+
+async function loadGrpLast(){
+  const {data}=await sb.from('messages').select('id,content,created_at,sender_id,deleted')
+    .eq('room_id',GRP).order('created_at',{ascending:false}).limit(1);
+  setGrpPreview((data&&data[0])||null);
+}
+function setGrpPreview(m){
+  grpLast=m;
+  const el=document.getElementById('gp-p');
+  if(!m){el.textContent='Tất cả thành viên';return;}
+  const s=gP(m.sender_id);
+  el.textContent=m.deleted?RECALLED_TXT:`${(s.full_name||'').split(' ').pop()}: ${(m.content||'').slice(0,40)}`;
+}
+function onRoomLast(rid,m){
+  if(rid===GRP)setGrpPreview(m);else touchConv(rid,m);
+}
+
+// ── OPEN GROUP / DM ──
+async function openGroup(){
+  activeRoom=GRP;activeOther=null;clearReply();
+  document.getElementById('gpin').classList.add('on');
+  document.querySelectorAll('.conv').forEach(c=>c.classList.remove('on'));
+  showChatHeader('Mello — Nhóm chung',null,true,`${allP.length} thành viên`);
+  applyInputLock();
+  await loadMsgs(true);
+}
+async function openDMRoom(rid,other){
+  activeRoom=rid;activeOther=other;clearReply();
+  document.getElementById('gpin').classList.remove('on');
+  document.querySelectorAll('.conv').forEach(c=>c.classList.toggle('on',c.dataset.rid===rid));
+  showChatHeader(other.full_name,other,false,`@${other.username}`);
+  applyInputLock();
+  await loadMsgs(true);
+}
+
+function showChatHeader(name,profile,isGrp,sub){
+  document.getElementById('empty').style.display='none';
+  const ac=document.getElementById('active-chat');ac.style.display='flex';
+  const chAv=document.getElementById('ch-av');chAv.innerHTML='';
+  chAv.style.width='34px';chAv.style.height='34px';chAv.style.fontSize='12px';
+  if(isGrp){
+    chAv.style.background='var(--grad)';chAv.style.borderRadius='9px';
+    chAv.style.display='flex';chAv.style.alignItems='center';chAv.style.justifyContent='center';
+    chAv.style.fontWeight='700';chAv.style.color='#fff';chAv.textContent='💬';
+  } else {
+    const av=makeAvEl(profile,34,'50%');
+    chAv.style.cssText='';chAv.appendChild(av);
+  }
+  const title=document.getElementById('ch-name');title.textContent=name;
+  title.classList.toggle('profile-trigger',!isGrp);title.title=isGrp?'':'Xem hồ sơ';title.onclick=(!isGrp&&profile)?()=>showPublicProfile(profile.id):null;
+  chAv.classList.toggle('profile-trigger',!isGrp);chAv.title=isGrp?'':'Xem hồ sơ';chAv.onclick=(!isGrp&&profile)?()=>showPublicProfile(profile.id):null;
+  document.getElementById('ch-sub').textContent=sub||'';
+}
+
+// ── MESSAGES ──
+async function loadMsgs(forceBottom){
+  if(!activeRoom)return;
+  const rid=activeRoom;
+  const {data}=await sb.from('messages').select(`
+    id,content,reply_to,created_at,sender_id,edited,deleted,
+    reactions(emoji,user_id)
+  `).eq('room_id',rid).order('created_at',{ascending:true}).limit(150);
+  if(rid!==activeRoom)return; // đã chuyển phòng trong lúc tải
+  allMsgs=data||[];
+  refreshMsgView(forceBottom);
+}
+
+// Vẽ lại khung chat, giữ nguyên bộ lọc tìm kiếm đang bật
+function refreshMsgView(forceBottom){
+  const q=(document.getElementById('msg-q').value||'').toLowerCase();
+  const searching=document.getElementById('msg-search-bar').style.display!=='none'&&q;
+  renderMsgs(searching?allMsgs.filter(m=>!m.deleted&&(m.content||'').toLowerCase().includes(q)):allMsgs,forceBottom);
+}
+
+function mkBtn(label,title,fn,cls){
+  const b=document.createElement('button');
+  b.className='ba'+(cls?' '+cls:'');b.textContent=label;b.title=title;
+  b.onclick=fn;return b;
+}
+
+function renderMsgs(msgs,forceBottom){
+  const wrap=document.getElementById('msgs');
+  const prevTop=wrap.scrollTop;
+  const stick=forceBottom||(wrap.scrollHeight-wrap.scrollTop-wrap.clientHeight<80);
+  wrap.innerHTML='';
+  let lastDate='',lastSender='';
+  msgs.forEach(m=>{
+    const ds=new Date(m.created_at).toLocaleDateString('vi-VN');
+    if(ds!==lastDate){
+      lastDate=ds;const sep=document.createElement('div');sep.className='dsep';
+      sep.innerHTML=`<span>${ds}</span>`;wrap.appendChild(sep);
+    }
+    const isSelf=m.sender_id===ME.id;
+    const sender=gP(m.sender_id);
+    const showName=!isSelf&&m.sender_id!==lastSender&&activeRoom===GRP;
+    lastSender=m.sender_id;
+
+    const grp=document.createElement('div');grp.className='mgrp'+(isSelf?' me':'');
+    if(showName){
+      const avEl=makeAvEl(sender,22,'50%');
+      avEl.style.display='inline-flex';avEl.style.verticalAlign='middle';avEl.style.marginRight='6px';
+      const nameRow=document.createElement('div');nameRow.className='mname';
+      nameRow.style.color=sender.color||'var(--tx3)';
+      avEl.classList.add('profile-trigger');
+      avEl.title='Xem hồ sơ';avEl.style.cursor='pointer';avEl.onclick=()=>showPublicProfile(sender.id);
+      nameRow.appendChild(avEl);
+      const senderName=document.createElement('span');senderName.textContent=sender.full_name;senderName.className='profile-trigger';senderName.title='Xem hồ sơ';senderName.onclick=()=>showPublicProfile(sender.id);
+      nameRow.appendChild(senderName);
+      grp.appendChild(nameRow);
+    }
+    if(m.reply_to&&!m.deleted){
+      const rm=allMsgs.find(x=>x.id===m.reply_to);
+      if(rm){
+        const rq=document.createElement('div');rq.className='rq';
+        rq.textContent=rm.deleted?'↩ '+RECALLED_TXT:`↩ ${gP(rm.sender_id).full_name}: ${(rm.content||'').slice(0,60)}`;
+        grp.appendChild(rq);
+      }
+    }
+
+    const bbl=document.createElement('div');bbl.className='bbl'+(m.deleted?' recalled':'');
+    if(m.deleted){
+      bbl.textContent=RECALLED_TXT;
+    } else {
+      const acts=document.createElement('div');acts.className='bacts';
+      acts.appendChild(mkBtn('↩','Trả lời',()=>startReply(m.id,m.content||'',sender.full_name)));
+      acts.appendChild(mkBtn('😊','Cảm xúc',()=>toggleEP2(m.id)));
+      if(isSelf)acts.appendChild(mkBtn('Thu hồi','Thu hồi tin nhắn',()=>recallMsg(m.id),'danger'));
+      bbl.appendChild(acts);
+      const ep=document.createElement('div');ep.className='ep';ep.id='ep-'+m.id;
+      ['👍','❤️','😂','😮','😢','🔥','✅','👏','🎉','💯'].forEach(e=>{
+        const s=document.createElement('span');s.className='epe';s.textContent=e;
+        s.onclick=()=>addR(m.id,e);ep.appendChild(s);
+      });
+      bbl.appendChild(ep);
+      const body=document.createElement('span');body.innerHTML=renderContent(m.content||'');
+      bbl.appendChild(body);
+      if(m.edited){
+        const ed=document.createElement('span');
+        ed.style.cssText='font-size:10px;opacity:.4;margin-left:4px';ed.textContent='·sửa';
+        bbl.appendChild(ed);
+      }
+    }
+    grp.appendChild(bbl);
+
+    if(!m.deleted){
+      const rmap={};
+      (m.reactions||[]).forEach(r=>{rmap[r.emoji]=rmap[r.emoji]||[];rmap[r.emoji].push(r.user_id);});
+      const entries=Object.entries(rmap);
+      if(entries.length){
+        const rd=document.createElement('div');rd.className='reacts';
+        entries.forEach(([e,us])=>{
+          const sp=document.createElement('span');sp.className='rc';
+          sp.textContent=`${e} ${us.length}`;sp.onclick=()=>addR(m.id,e);rd.appendChild(sp);
+        });
+        grp.appendChild(rd);
+      }
+    }
+    const tm=document.createElement('div');tm.className='mtime';tm.textContent=ftm(m.created_at);
+    grp.appendChild(tm);
+    wrap.appendChild(grp);
+  });
+  wrap.scrollTop=stick?wrap.scrollHeight:prevTop;
+}
+
+// ── SEND ──
+async function send(){
+  const ti=document.getElementById('ti');
+  const txt=ti.value.trim();if(!txt||!activeRoom)return;
+  if(activeOther&&!isFriend(activeOther.id)){toast('Hãy kết bạn trước khi nhắn tin','🔒');return;}
+  document.getElementById('emoji-panel').classList.remove('on');
+  document.getElementById('emoji-btn').classList.remove('on');
+  const rid=activeRoom;
+  const pay={room_id:rid,sender_id:ME.id,content:txt};
+  if(replyTo)pay.reply_to=replyTo;
+  ti.value='';ti.style.height='';clearReply();
+  const {data,error}=await sb.from('messages').insert(pay)
+    .select('id,content,reply_to,created_at,sender_id,edited,deleted').single();
+  if(error||!data){toast('Gửi tin nhắn thất bại','❌');ti.value=txt;return;}
+  if(rid===activeRoom){
+    if(!allMsgs.some(x=>x.id===data.id))allMsgs.push({...data,reactions:[]});
+    refreshMsgView(true);
+  }
+  onRoomLast(rid,data);
+}
+function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
+function autoH(el){el.style.height='';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+
+function startReply(id,c,name){
+  replyTo=id;document.getElementById('rbar').classList.add('on');
+  document.getElementById('rbt').textContent=`${name}: ${c}`;
+  document.getElementById('ti').focus();
+}
+function clearReply(){replyTo=null;document.getElementById('rbar').classList.remove('on');}
+
+// ── THU HỒI TIN NHẮN ──
+async function recallMsg(id){
+  if(!confirm('Thu hồi tin nhắn này? Mọi người trong cuộc trò chuyện sẽ không còn xem được nội dung.'))return;
+  const rid=activeRoom;
+  let {error}=await sb.from('messages').update({deleted:true,content:''}).eq('id',id).eq('sender_id',ME.id);
+  if(error)({error}=await sb.from('messages').update({deleted:true}).eq('id',id).eq('sender_id',ME.id));
+  if(error){toast('Không thu hồi được tin nhắn','❌');return;}
+  applyRecall(rid,id);
+  toast('Đã thu hồi tin nhắn','↩️');
+}
+function applyRecall(rid,id){
+  if(rid===activeRoom){
+    const m=allMsgs.find(x=>x.id===id);
+    if(m){m.deleted=true;m.content='';m.reactions=[];refreshMsgView(false);}
+  }
+  const last=rid===GRP?grpLast:(convs.get(rid)||{}).last;
+  if(last&&last.id===id)onRoomLast(rid,{...last,deleted:true,content:''});
+}
+
+async function addR(msgId,emoji){
+  const {data:ex}=await sb.from('reactions').select('id')
+    .eq('message_id',msgId).eq('user_id',ME.id).eq('emoji',emoji);
+  if(ex?.length) await sb.from('reactions').delete().eq('message_id',msgId).eq('user_id',ME.id).eq('emoji',emoji);
+  else await sb.from('reactions').insert({message_id:msgId,user_id:ME.id,emoji});
+  document.querySelectorAll('.ep').forEach(e=>e.classList.remove('on'));
+  await loadMsgs(false);
+}
+async function toggleR(mid,e){await addR(mid,e);}
+function toggleEP2(id){
+  document.querySelectorAll('.ep').forEach(e=>e.classList.remove('on'));
+  document.getElementById('ep-'+id)?.classList.toggle('on');
+}
+
+// ── REALTIME ──
+function subscribeRT(){
+  if(rtChan)sb.removeChannel(rtChan);
+  if(rtFr)sb.removeChannel(rtFr);
+  rtChan=sb.channel('mello-rt3')
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},onMsgInsert)
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages'},onMsgUpdate)
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles'},onProfChange)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'profiles'},onProfChange)
+    .subscribe();
+  // kênh riêng: nếu bảng friendships chưa tạo thì không ảnh hưởng tin nhắn realtime
+  rtFr=sb.channel('mello-friends')
+    .on('postgres_changes',{event:'*',schema:'public',table:'friendships'},onFriendEvt)
+    .subscribe();
+}
+
+async function onMsgInsert(p){
+  const m=p.new;
+  if(!m||m.sender_id===ME.id)return; // tin của mình đã xử lý ngay trong send()
+  if(m.room_id!==GRP&&!convs.has(m.room_id)){
+    if(nonMember.has(m.room_id))return;
+    const c=await adoptRoom(m.room_id);
+    if(!c){nonMember.add(m.room_id);return;}
+  }
+  onRoomLast(m.room_id,m); // chỉ cập nhật 1 dòng, không tải lại danh sách
+  if(m.room_id===activeRoom){
+    if(!allMsgs.some(x=>x.id===m.id)){allMsgs.push({...m,reactions:[]});refreshMsgView(false);}
+  } else {
+    const s=gP(m.sender_id);
+    toast(`${s.full_name}: ${(m.content||'').slice(0,50)}`,'💬');
+    document.title='(!) Mello';
+    const nb=document.getElementById('nb');nb.textContent='!';nb.classList.add('on');
+    setTimeout(()=>{nb.classList.remove('on');document.title='Mello';},6000);
+  }
+}
+
+function onMsgUpdate(p){
+  const m=p.new;
+  if(!m||!m.deleted)return;
+  if(m.room_id!==GRP&&!convs.has(m.room_id))return;
+  applyRecall(m.room_id,m.id);
+}
+
+async function onFriendEvt(p){
+  const n=p.new||{},o=p.old||{};
+  const row=n.id?n:o;
+  if(row.requester_id&&row.addressee_id&&row.requester_id!==ME.id&&row.addressee_id!==ME.id)return;
+  if(p.eventType==='INSERT'&&n.addressee_id===ME.id)
+    toast(`${gP(n.requester_id).full_name} đã gửi lời mời kết bạn`,'👋');
+  if(p.eventType==='UPDATE'&&n.status==='accepted'&&n.requester_id===ME.id)
+    toast(`${gP(n.addressee_id).full_name} đã chấp nhận lời mời kết bạn`,'🤝');
+  await afterFriendChange();
+}
+
+async function onProfChange(){
+  const sig=()=>JSON.stringify(allP.map(p=>[p.id,p.full_name,p.color,p.avatar_emoji,p.avatar_url]));
+  const before=sig();
+  await loadProfiles();
+  if(sig()===before)return; // chỉ last_seen đổi → không cần vẽ lại gì
+  const me=allP.find(p=>p.id===ME.id);
+  if(me){ME={...ME,...me};renderRailAv();}
+  renderConvList();
+  if(activeOther){
+    activeOther=gP(activeOther.id);
+    showChatHeader(activeOther.full_name,activeOther,false,`@${activeOther.username}`);
+  } else if(activeRoom===GRP){
+    document.getElementById('ch-sub').textContent=`${allP.length} thành viên`;
+  }
+  if(activeRoom)refreshMsgView(false);
+  refreshPplIfOpen();
+}
+
+// ── PEOPLE MODAL (danh sách người dùng + kết bạn) ──
+async function openPpl(){
+  await loadProfiles();await loadFriendships();
+  document.getElementById('ppl-q').value='';
+  document.getElementById('ppl-count').textContent=allP.length;
+  markPplTabs();renderPpl();
+  document.getElementById('ppl-ov').classList.add('on');
+}
+function markPplTabs(){
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.toggle('on',b.dataset.t===pplTab));
+}
+function setPplTab(t){pplTab=t;markPplTabs();renderPpl();}
+function filterPpl(){renderPpl();}
+function refreshPplIfOpen(){
+  if(!document.getElementById('ppl-ov').classList.contains('on'))return;
+  document.getElementById('ppl-count').textContent=allP.length;
+  renderPpl();
+}
+function pBtn(label,bg,color,fn){
+  const b=document.createElement('button');
+  b.style.cssText=`background:${bg};border:none;color:${color};padding:6px 12px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;`;
+  b.textContent=label;
+  b.onclick=async()=>{b.disabled=true;b.style.opacity='.6';await fn();};
+  return b;
+}
+function renderPpl(){
+  const el=document.getElementById('ppl-list');el.innerHTML='';
+  const q=(document.getElementById('ppl-q').value||'').toLowerCase();
+  let list=allP.filter(p=>p.id!==ME.id&&
+    (p.full_name.toLowerCase().includes(q)||p.username.toLowerCase().includes(q)));
+  if(pplTab==='req')list=list.filter(p=>relOf(p.id).s==='received');
+  else if(pplTab==='fr')list=list.filter(p=>relOf(p.id).s==='friends');
+  else list.sort((a,b)=>(relOf(a.id).s==='received'?0:1)-(relOf(b.id).s==='received'?0:1));
+  if(!list.length){
+    const msg=pplTab==='req'?'Chưa có lời mời nào.':pplTab==='fr'?'Bạn chưa có bạn bè nào.':'Không tìm thấy.';
+    el.innerHTML=`<div style="color:var(--tx3);font-size:13px;padding:10px">${msg}</div>`;
+    return;
+  }
+  list.forEach(p=>{
+    const r=relOf(p.id);
+    const d=document.createElement('div');d.className='mi';
+    d.title='Bấm để xem hồ sơ';
+    const pav=makeAvEl(p,36,'50%');pav.classList.add('profile-trigger');pav.onclick=()=>showPublicProfile(p.id);
+    d.appendChild(pav);
+    const info=document.createElement('div');info.style.cssText='flex:1;min-width:0';
+    const n=document.createElement('div');n.className='min';n.textContent=p.full_name;
+    const u=document.createElement('div');u.className='mis';
+    u.textContent='@'+p.username+(r.s==='received'?' · muốn kết bạn với bạn':'');
+    n.classList.add('profile-trigger');u.classList.add('profile-trigger');n.onclick=()=>showPublicProfile(p.id);u.onclick=()=>showPublicProfile(p.id);
+    info.append(n,u);d.appendChild(info);
+    d.onclick=(ev)=>{if(!ev.target.closest('button'))showPublicProfile(p.id);};
+    const box=document.createElement('div');box.style.cssText='display:flex;gap:6px;flex-shrink:0';
+    if(r.s==='friends')box.appendChild(pBtn('Nhắn tin','var(--blue)','#fff',()=>openDM(p.id)));
+    else if(r.s==='none')box.appendChild(pBtn('Kết bạn','var(--blue)','#fff',()=>sendReq(p.id)));
+    else if(r.s==='sent')box.appendChild(pBtn('Hủy lời mời','var(--p3)','var(--tx2)',()=>cancelReq(r.f.id)));
+    else{
+      box.appendChild(pBtn('Chấp nhận','var(--blue)','#fff',()=>acceptReq(r.f.id)));
+      box.appendChild(pBtn('Từ chối','var(--p3)','var(--tx2)',()=>declineReq(r.f.id)));
+    }
+    d.appendChild(box);el.appendChild(d);
+  });
+}
+
+async function findDmRoom(uid){
+  const [{data:a},{data:b}]=await Promise.all([
+    sb.from('room_members').select('room_id').eq('user_id',ME.id),
+    sb.from('room_members').select('room_id').eq('user_id',uid)
+  ]);
+  const common=(a||[]).map(r=>r.room_id).filter(id=>id!==GRP&&(b||[]).some(x=>x.room_id===id));
+  if(!common.length)return null;
+  const {data:rms}=await sb.from('rooms').select('id,type').in('id',common);
+  const dm=(rms||[]).find(r=>r.type==='dm');
+  return dm?dm.id:null;
+}
+async function openDM(uid){
+  if(!isFriend(uid)){toast('Hãy kết bạn trước khi nhắn tin','🔒');return;}
+  closeOv('ppl-ov');
+  const other=gP(uid);
+  let c=[...convs.values()].find(x=>x.other===uid);
+  if(!c){
+    let rid=await findDmRoom(uid);
+    if(!rid){
+      const {data:room,error}=await sb.from('rooms').insert({type:'dm'}).select().single();
+      if(error||!room){toast('Không tạo được cuộc trò chuyện','❌');return;}
+      rid=room.id;
+      await sb.from('room_members').insert([{room_id:rid,user_id:ME.id},{room_id:rid,user_id:uid}]);
+    }
+    c={rid,other:uid,last:null};
+    convs.set(rid,c);
+    renderConvList();
+  }
+  await openDMRoom(c.rid,other);
+}
+function closeOv(id){document.getElementById(id).classList.remove('on');}
+
+// ── HỒ SƠ CÔNG KHAI ──
+function showPublicProfile(uid){
+  const p=gP(uid);if(!p||p.id===ME?.id){openProfile();return;}
+  const av=document.getElementById('pub-av');av.innerHTML='';av.style.background=p.color||'#2563eb';av.style.color='#fff';
+  if(p.avatar_url&&IMG_OK.test(p.avatar_url)){const im=document.createElement('img');im.src=p.avatar_url;im.alt='Ảnh đại diện';av.appendChild(im);}
+  else {av.textContent=p.avatar_emoji||ini(p.full_name);av.style.fontSize=p.avatar_emoji?'34px':'24px';}
+  document.getElementById('pub-name').textContent=p.full_name||'Người dùng Mello';
+  document.getElementById('pub-user').textContent='@'+(p.username||'');
+  const details=document.getElementById('pub-details');details.innerHTML='';
+  const chips=[['♙ '+(p.role||'Thành viên')],['● '+(p.is_active?'Đang hoạt động':'Tài khoản không hoạt động')]];
+  chips.forEach(([label])=>{const x=document.createElement('span');x.className='profile-chip';x.textContent=label;details.appendChild(x);});
+  const actions=document.getElementById('pub-actions');actions.innerHTML='';const r=relOf(uid);
+  if(r.s==='friends')actions.appendChild(pBtn('✉ Nhắn tin','#3978f6','#fff',()=>{closeOv('public-prof-ov');openDM(uid);}));
+  else if(r.s==='none')actions.appendChild(pBtn('＋ Kết bạn','#3978f6','#fff',()=>sendReq(uid)));
+  else if(r.s==='sent')actions.appendChild(pBtn('✓ Đã gửi lời mời','var(--p3)','var(--tx2)',()=>cancelReq(r.f.id)));
+  else {actions.appendChild(pBtn('✓ Chấp nhận','#3978f6','#fff',()=>acceptReq(r.f.id)));actions.appendChild(pBtn('Từ chối','var(--p3)','var(--tx2)',()=>declineReq(r.f.id)));}
+  document.getElementById('public-prof-ov').classList.add('on');
+}
+function openForgot(){
+  document.getElementById('recovery-step1').style.display='';
+  document.getElementById('recovery-step2').style.display='none';
+  document.getElementById('recovery-back').style.display='none';
+  document.getElementById('forgot-email').value='';
+  setRecoveryStatus('');
+  document.getElementById('forgot-ov').classList.add('on');
+}
+function setRecoveryStatus(message,isError=false){const el=document.getElementById('recovery-status');el.textContent=message;el.style.display=message?'block':'none';el.style.color=isError?'#b54747':'#52677b';}
+function recoveryBack(){document.getElementById('recovery-step1').style.display='';document.getElementById('recovery-step2').style.display='none';document.getElementById('recovery-back').style.display='none';setRecoveryStatus('');}
+async function requestRecoveryEmail(){
+  const email=document.getElementById('forgot-email').value.trim().toLowerCase();
+  if(!email){setRecoveryStatus('Vui lòng nhập email khôi phục.',true);return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setRecoveryStatus('Địa chỉ email chưa đúng định dạng. Vui lòng kiểm tra lại.',true);return;}
+  const btn=document.getElementById('send-otp-btn');btn.disabled=true;btn.textContent='Đang gửi yêu cầu…';setRecoveryStatus('');
+  try{
+    // This Edge Function must send the reset link using a trusted server-side email provider.
+    const {data,error}=await sb.functions.invoke('password-recovery',{body:{action:'send_email',email}});
+    if(error)throw error;
+    if(data?.ok!==true)throw new Error(data?.message||'Không thể gửi liên kết khôi phục.');
+    document.getElementById('recovery-step1').style.display='none';
+    document.getElementById('recovery-step2').style.display='';
+    setRecoveryStatus('Nếu email thuộc một tài khoản hợp lệ, liên kết khôi phục sẽ được gửi. Hãy kiểm tra cả thư mục Spam/Thư rác. Nếu không nhận được thư, vui lòng liên hệ quản trị viên.');
+  }catch(err){
+    console.error('Password recovery email request failed:',err);
+    setRecoveryStatus('Chức năng khôi phục qua email chưa được cấu hình hoặc hiện không khả dụng. Vui lòng liên hệ quản trị viên. Cần triển khai Edge Function “password-recovery” để gửi email an toàn.',true);
+  }finally{btn.disabled=false;btn.textContent='Gửi liên kết khôi phục';}
+}
+
+// ── PROFILE MODAL ──
+function openProfile(){
+  document.getElementById('prof-name-display').textContent=ME.full_name;
+  document.getElementById('prof-uname-display').textContent='@'+ME.username;
+  document.getElementById('prof-name-inp').value=ME.full_name;
+  selAvatar=ME.avatar_emoji||null;
+  selAvatarImg=ME.avatar_url||null;
+  profSelColor=ME.color||COLORS[0];
+  const grid=document.getElementById('avatar-grid');grid.innerHTML='';
+  const pick=(emo)=>{selAvatar=emo;selAvatarImg=null;refreshBigAv();markGrid();};
+  const noEmo=document.createElement('div');noEmo.className='av-opt';noEmo.dataset.v='';
+  noEmo.style.background=profSelColor;noEmo.style.color='#fff';noEmo.style.fontSize='13px';
+  noEmo.textContent=ini(ME.full_name);
+  noEmo.onclick=()=>pick(null);
+  grid.appendChild(noEmo);
+  AVATARS.forEach(em=>{
+    const opt=document.createElement('div');opt.className='av-opt';opt.dataset.v=em;
+    opt.textContent=em;opt.style.fontSize='22px';
+    opt.onclick=()=>pick(em);
+    grid.appendChild(opt);
+  });
+  const cg=document.getElementById('color-grid');cg.innerHTML='';
+  COLORS.forEach(c=>{
+    const dot=document.createElement('div');dot.className='cc'+(profSelColor===c?' on':'');
+    dot.style.background=c;
+    dot.onclick=()=>{
+      profSelColor=c;cg.querySelectorAll('.cc').forEach(x=>x.classList.remove('on'));dot.classList.add('on');
+      noEmo.style.background=c;refreshBigAv();
+    };
+    cg.appendChild(dot);
+  });
+  refreshBigAv();markGrid();
+  document.getElementById('prof-ov').classList.add('on');
+}
+function markGrid(){
+  [...document.getElementById('avatar-grid').children].forEach(el=>{
+    const v=el.dataset.v;
+    el.classList.toggle('on',!selAvatarImg&&((v===''&&selAvatar===null)||(v!==''&&v===selAvatar)));
+  });
+  document.getElementById('av-remove').style.display=selAvatarImg?'':'none';
+}
+function refreshBigAv(){
+  const name=document.getElementById('prof-name-inp').value||ME.full_name;
+  fillAv(document.getElementById('prof-av-big'),
+    {color:profSelColor,avatar_emoji:selAvatar,avatar_url:selAvatarImg,full_name:name},80);
+}
+
+// Tải ảnh từ máy: cắt vuông giữa, thu nhỏ 256×256, nén JPEG rồi lưu dạng data URL
+function onAvFile(inp){
+  const f=inp.files&&inp.files[0];inp.value='';
+  if(!f)return;
+  if(!/^image\/(png|jpe?g|webp|gif)$/i.test(f.type)){toast('Chỉ hỗ trợ ảnh PNG, JPG, WEBP, GIF','❌');return;}
+  if(f.size>8*1024*1024){toast('Ảnh quá lớn (tối đa 8MB)','❌');return;}
+  const url=URL.createObjectURL(f);
+  const img=new Image();
+  img.onload=()=>{
+    const S=256,c=document.createElement('canvas');c.width=c.height=S;
+    const ctx=c.getContext('2d');
+    ctx.fillStyle=profSelColor||'#2563eb';ctx.fillRect(0,0,S,S); // nền cho ảnh PNG trong suốt
+    const side=Math.min(img.naturalWidth,img.naturalHeight);
+    ctx.drawImage(img,(img.naturalWidth-side)/2,(img.naturalHeight-side)/2,side,side,0,0,S,S);
+    URL.revokeObjectURL(url);
+    selAvatarImg=c.toDataURL('image/jpeg',.85);
+    selAvatar=null;
+    refreshBigAv();markGrid();
+  };
+  img.onerror=()=>{URL.revokeObjectURL(url);toast('Không đọc được file ảnh này','❌');};
+  img.src=url;
+}
+function removeAvImg(){selAvatarImg=null;refreshBigAv();markGrid();}
+
+async function saveProfile(){
+  const name=document.getElementById('prof-name-inp').value.trim();
+  if(!name){toast('Tên không được để trống','❌');return;}
+  const updates={full_name:name,color:profSelColor,avatar_emoji:selAvatarImg?null:selAvatar,avatar_url:selAvatarImg||null};
+  const {error}=await sb.from('profiles').update(updates).eq('id',ME.id);
+  if(error){
+    toast(/avatar_url/.test(error.message||'')?'Chưa có cột avatar_url — hãy chạy SQL cài đặt':'Lưu hồ sơ thất bại','❌');
+    return;
+  }
+  ME={...ME,...updates};
+  renderRailAv();
+  await loadProfiles();
+  closeOv('prof-ov');
+  toast('Đã cập nhật hồ sơ','✅');
+  renderConvList();
+  if(activeRoom)refreshMsgView(false);
+}
+
+// ── VIEW ──
+function setView(v){
+  ['rb-chat','adm-btn'].forEach(id=>document.getElementById(id).classList.remove('on'));
+  document.getElementById('chat-v').style.display=v==='chat'?'flex':'none';
+  document.getElementById('adm-v').classList.toggle('on',v==='admin');
+  document.getElementById(v==='admin'?'adm-btn':'rb-chat').classList.add('on');
+  if(v==='admin')loadAdminU();
+}
+
+// ── ADMIN ──
+async function loadAdminU(){
+  const {data}=await sb.from('profiles').select('*').order('created_at');
+  const tb=document.getElementById('atbody');tb.innerHTML='';
+  (data||[]).forEach(u=>{
+    const tr=document.createElement('tr');
+    const av=makeAvEl(u,30,'50%');
+    let avHTML=av.outerHTML;
+    tr.innerHTML=`
+      <td><div style="display:flex;align-items:center;gap:9px">${avHTML}${esc(u.full_name)}</div></td>
+      <td style="color:var(--tx2)">@${u.username}</td>
+      <td><span class="tag ${u.is_active?'ok':'no'}">${u.is_active?'Hoạt động':'Đã khóa'}</span></td>
+      <td><span class="tag ${u.is_admin?'a':'u'}">${u.is_admin?'Admin':'User'}</span></td>
+      <td style="display:flex;gap:6px">
+        ${u.id!==ME.id?`
+        <button class="tb-b" style="background:var(--p3);color:var(--tx2)" onclick="togAdm('${u.id}',${u.is_admin})">${u.is_admin?'Hủy Admin':'→ Admin'}</button>
+        <button class="tb-b" style="background:${u.is_active?'rgba(239,68,68,.15)':'rgba(16,185,129,.15)'};color:${u.is_active?'#ef4444':'#10b981'}" onclick="togAct('${u.id}',${u.is_active})">${u.is_active?'Khóa':'Mở khóa'}</button>
+        `:'<span style="color:var(--tx3);font-size:11px">Bạn</span>'}
+      </td>`;
+    tb.appendChild(tr);
+  });
+}
+async function togAdm(id,cur){
+  await sb.from('profiles').update({is_admin:!cur}).eq('id',id);
+  toast(!cur?'Đã cấp Admin':'Đã thu hồi Admin','⚙️');loadAdminU();
+}
+async function togAct(id,cur){
+  await sb.from('profiles').update({is_active:!cur}).eq('id',id);
+  toast(!cur?'Đã mở khóa':'Đã khóa tài khoản',!cur?'✅':'🔒');loadAdminU();
+}
+
+// Click outside to close panels
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#emoji-panel')&&!e.target.closest('#emoji-btn')){
+    document.getElementById('emoji-panel').classList.remove('on');
+    document.getElementById('emoji-btn').classList.remove('on');
+  }
+  if(!e.target.closest('.ep')&&!e.target.closest('.ba')){
+    document.querySelectorAll('.ep').forEach(ep=>ep.classList.remove('on'));
+  }
+});
+
+// ── SESSION RESTORE ──
+window.onload=async()=>{
+  const uid=localStorage.getItem('mello_uid');
+  if(uid){
+    const {data}=await sb.from('profiles').select('*').eq('id',uid).eq('is_active',true).single();
+    if(data)await boot(data);
+  }
+};
+</script>
+</body>
+</html>
